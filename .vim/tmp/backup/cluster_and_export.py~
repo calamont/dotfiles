@@ -1,0 +1,261 @@
+"""A script for hierarchical clustering, exporting output as a D3 dendrogram"""
+import re
+import json
+import argparse
+import scipy.spatial
+import scipy.cluster
+
+import numpy as np
+import pandas as pd
+import networkx as nx
+import tensorflow_hub as hub
+
+from tqdm import tqdm
+from collections import Counter, defaultdict
+from functools import reduce, lru_cache
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize, sent_tokenize
+from scipy.cluster.hierarchy import linkage, inconsistent
+from sklearn.feature_extraction.text import CountVectorizer
+
+stop_words = stopwords.words()
+stop_words.extend(["i", "me", "he", "her", "she", ",", "since", "cause", ".", "..."])
+stop_words = [w.lower() for w in stop_words]
+
+def main(args):
+    stop_words.extend([w.strip().lower() for w in args.stop_words.split(",")])
+
+    print("\nLoading data...")
+    data = load_data(args.file)
+    data = preprocess_data(data, method=args.preprocess_method, args=args)
+    if args.max_size is not None:
+        data = data.sample(n=args.max_size)
+    print(f"Size of data to embed and cluster: {len(data)}")
+    
+    print("\nEmbedding data...")
+    embeddings = embed_text(data[args.preprocess_method], args.tf_hub_model, args.embed_batch_size)
+
+    ids = data.id.values
+    asins = data.asin.values
+    tree, rootnode = create_tree(embeddings, args.linkage_method,
+                                 args.linkage_metric, 
+                                 args.merge_threshold, 
+                                 data[args.preprocess_method].values, 
+                                 ids, 
+                                 asins)
+    tree = merge_nodes(tree, args.leaf_threshold)
+    tree = label_nodes(tree, n_keywords=args.n_keywords)
+    save_tree(tree, rootnode, args.save_file)
+
+
+def load_data(file):
+    """Loads and preprocesses review data"""
+    df = pd.read_csv(file)
+    df = df.fillna('')
+    df = df[["asin", "id", "text"]]
+    df = df.drop_duplicates()
+    return df
+
+def preprocess_data(data, method, args):
+    if method == "text":
+        new_data = data
+    elif method == "sentence":
+        idxs = []
+        sentences = []
+        for i, review in enumerate(data.text):
+            sents = sent_tokenize(review)
+            for sent in sents:
+                if any(word.strip().lower() in sent.lower() for word in args.filter_words.split(",")):
+                    sentences.append(sent)
+                    idxs.append(i)
+        new_data = data.iloc[idxs].copy()
+        new_data[method] = sentences
+    # Drop modified text if it is repeated in the same review
+    new_data.drop_duplicates(subset=["id", method])
+    return new_data
+
+    
+
+def embed_text(text, model_url, batch_size):
+    """Embed text using TF hub model"""
+    embed = hub.KerasLayer(model_url)
+    # Unsure if need to embed in batches. If so uncomment the code below.
+    embeddings = []
+    for i in tqdm(range(0, len(text), batch_size)):
+        vecs = embed(text[i:i+batch_size])["outputs"]
+        embeddings.append(vecs)
+    embeddings = np.vstack(embeddings)
+    return embeddings
+
+def create_tree(X, method, metric, merge_threshold, text, ids, asins):
+    """Create hierarchical cluster tree"""
+    print("\nClustering data...")
+    links = linkage(X, method=method, metric=metric)
+    metrics = create_metric_dict(links, d=args.linkage_depth)
+    print("\nCreating tree...")
+    rootnode, nodelist = scipy.cluster.hierarchy.to_tree(links, rd=True)
+    print("\nCreating DiGraph")
+    G = nx.DiGraph()
+    for node in nodelist:
+        G = add_edge(G, node, merge_threshold, links, metrics, text, ids, asins)
+    return G, rootnode
+
+def create_metric_dict(linkage, d):
+    """Collates the metrics of a node into a dict based on the `d` links below."""
+    metrics = inconsistent(linkage, d=d)
+    metric_dict = defaultdict(dict)
+    for i in range(len(linkage)):
+        idx = i + len(linkage) - 1
+        metric_dict[idx]["link_distance"] = linkage[i,2]
+        metric_dict[idx]["size"] = linkage[i,3]
+        metric_dict[idx]["link_mean"] = metrics[i,0]
+        metric_dict[idx]["link_std"] = metrics[i,1]
+        metric_dict[idx]["inconsistency"] = metrics[i,3]
+    return metric_dict
+
+def label_nodes(G, method='frequency', n_keywords=None):
+    """Label each node based on members of cluster."""
+    print("\nLabelling nodes...")
+    node_attrs = {}
+    for node_id in G.nodes:
+        keywords = summarise_node(G, node_id, n_keywords)
+        node_attrs[node_id] = keywords
+    nx.set_node_attributes(G, node_attrs, "keywords")
+    return G
+
+def summarise_node(G, node_id, n_keywords=None):
+    """Summarisation of lead attributes for descendants of `node_id`"""
+    node_text = ''
+    descendants = nx.descendants(G, node_id)
+    if len(descendants) == 0: # node_id is leaf node
+        node_text += ' '.join(G.nodes[node_id]["text"])
+    else:  # collect text of leaves below node_id
+        for id_ in descendants:
+            node = G.nodes[id_]
+            if node["leaf"]:
+                node_text += ' '.join(node["text"])
+    # Strip punctuation from text
+    node_text = re.sub(r"[^a-zA-Z\-\. ]", "", node_text)
+    words = word_tokenize(node_text)
+    words = [w for w in words if w.lower() not in stop_words]
+    c = Counter(words)
+    try:
+        keywords = ' '.join(list(zip(*c.most_common()))[0][:n_keywords])
+    except IndexError:
+        keywords = 'NO UNIQUE KEYWORDS'
+    return keywords
+
+def save_tree(G, rootnode, save_file):
+    print("\nSaving file...")
+    data = nx.node_link_data(G)
+    with open(save_file, 'w') as f:
+        json.dump(data, f, indent=2)
+
+def add_edge(G, node, merge_threshold, linkage, metrics, text, ids, asins):
+    """Adds node to NetworkX DiGraph."""
+    if node.is_leaf():
+        G.add_node(node.get_id(),
+                id=node.get_id(), 
+                children=[], 
+                leaf=True,
+                dist=0.0,
+                dist_old=0,
+                size=1,
+                link_mean=0,
+                link_std=0,
+                inconsistency=0,
+                text=[text[node.get_id()]],
+                review_id=[ids[node.get_id()]],
+                asin=[asins[node.get_id()]])
+    elif node.dist > merge_threshold:
+        return G
+    else:
+        left = node.get_left()
+        right = node.get_right()
+        G.add_node(node.get_id(),
+                   id=node.get_id(),
+                   children=[left.get_id(), right.get_id()],
+                   leaf=False,
+                   dist = metrics[node.get_id()].get("link_distance", 0),
+                   size = metrics[node.get_id()].get("size", 1),
+                   link_mean = metrics[node.get_id()].get("link_mean", 0),
+                   link_std = metrics[node.get_id()].get("link_std", 0),
+                   inconsistency = metrics[node.get_id()].get("inconsistency", 0),
+                   dist_old=linkage[node.get_id()-len(linkage)-1, 2])
+        G.add_edges_from([(node.get_id(), left.get_id()),
+                          (node.get_id(), right.get_id())])
+    return G
+ 
+def combine_descendants(G, node_id):
+    """Combine attributes of descendants of a node"""
+    node_attrs = defaultdict(list)
+    descendants = nx.descendants(G, node_id)
+    if len(descendants) == 0:                             # node_id is leaf node
+        for key, val in G.nodes[node_id].items():
+            try:
+                node_attrs[key].extend(val)
+            except TypeError:
+                node_attrs[key].append(val)
+    else:                                 # collect text of leaves below node_id
+        for id_ in descendants:
+            node = G.nodes[id_]
+            if node["leaf"]:
+                for key, val in node.items():
+                    try:
+                        node_attrs[key].extend(val)
+                    except TypeError:
+                        node_attrs[key].append(val)
+            else:
+                node_attrs["id"].append(node["id"])
+    # node_attrs["text"] = ", ".join(node_attrs["text"])
+    node_attrs["leaf"] = True
+    node_attrs.pop("dist")
+    return node_attrs
+
+def merge_nodes(G, leaf_threshold):
+    """Merge descendants of node if any immediate child is a leaf."""
+    merged_nodes = []
+    for node_id in reversed(list(G.nodes)):
+        if (node_id in merged_nodes) or (G.nodes[node_id]["leaf"]):
+            continue
+        # if any(G.nodes[node]["leaf"] for node in G.nodes[node_id]["children"]):
+        if G.nodes[node_id]["dist"] < leaf_threshold:
+            node_attrs = combine_descendants(G, node_id)
+            merged_nodes.extend(node_attrs["id"])
+            node_attrs.pop("id")
+            nx.set_node_attributes(G, {node_id: node_attrs})
+    G.remove_nodes_from(merged_nodes)
+    return G
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Script for embedding and clustering reviews.")
+    parser.add_argument("file", type=str, 
+                        help="File containing text for embedding.")
+    parser.add_argument("save_file", type=str, 
+                        help="File name to save dendrogram to.")
+    parser.add_argument("--max_size", default=None, type=int,
+                        help="To limit size of data for clustering. 1 samples entire dataset.")
+    parser.add_argument("--preprocess_method", type=str, default="text",
+                        help="Method for preprocessing text.")
+    parser.add_argument("--tf_hub_model", type=str, 
+                        default="https://tfhub.dev/google/universal-sentence-encoder-large/4",
+                        help="URL for tensorflow hub model.")
+    parser.add_argument("--embed_batch_size", type=int, default=100)
+    parser.add_argument("--linkage_method", type=str, default="ward",
+                        help="Method used to calculate distance between clusters (e.g. ward)"
+    parser.add_argument("--linkage_metric", type=str, default="euclidean",
+                        help="Distance metric used. Defaults to euclidean.")
+    parser.add_argument("--linkage_depth", type=int, default=5, 
+                        help="The number of links below a node used to calculate its metrics")
+    parser.add_argument("--leaf_threshold", type=float, default=0.5,
+                        help="The inter-cluster distance below which nodes and all their children are merged together.")
+    parser.add_argument("--merge_threshold", type=float, default=0.8,
+                        help="The inter-cluster distance above which nodes are not merged and become root nodes.")
+    parser.add_argument("--n_keywords", type=int, default=5,
+                        help="The number of keywords used to summarise the reviews in each node.")
+    parser.add_argument("--stop_words", type=str, default="",
+                        help="Words to exclude as keywords for the node summaries.")
+    parser.add_argument("--filter_words", type=str, default="", 
+                        help="A comma separated list of words to filter out text for embedding/clustering.")
+    args = parser.parse_args()
+    main(args)

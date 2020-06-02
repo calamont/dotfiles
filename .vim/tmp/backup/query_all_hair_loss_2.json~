@@ -1,0 +1,14 @@
+{
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "simple_query_string": {
+            "fields": ["text"],
+            "query": "((hair + (loss | thinning | shed*) | bald*) + -(dog* | cat | cats | pet | pets))" 
+          }
+        }
+      ]
+    }
+  }
+}

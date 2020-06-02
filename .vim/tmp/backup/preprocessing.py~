@@ -1,0 +1,82 @@
+import numpy as np
+import pandas as pd
+import tensorflow_hub as hub
+
+from tqdm import tqdm
+from eldar import build_query
+from nltk.tokenize import word_tokenize, sent_tokenize
+
+
+def load_data(file):
+    """Loads and preprocesses review data"""
+    df = pd.read_csv(file)
+    df = df.fillna("")
+    df = df[["asin", "id", "text"]]
+    df = df.drop_duplicates()
+    return df
+
+
+def preprocess_data(data, method, **kwargs):
+    if method == "filter_text":
+        reviews = []
+        idxs = []
+        for i, review in enumerate(data.text):
+            if any(
+                word.strip().lower() in review.lower()
+                for word in kwargs.get("filter_query", "").split(",")
+            ):
+                reviews.append(review)
+                idxs.append(i)
+        new_data = data.iloc[idxs].copy()
+        new_data["extraction"] = reviews
+
+    elif method == "filter_sentence":
+        idxs = []
+        sentences = []
+        for i, review in enumerate(data.text):
+            sents = sent_tokenize(review)
+            for sent in sents:
+                if any(
+                    word.strip().lower() in sent.lower()
+                    for word in kwargs.get("filter_query", "").split(",")
+                ):
+                    sentences.append(sent)
+                    idxs.append(i)
+        new_data = data.iloc[idxs].copy()
+        new_data["extraction"] = sentences
+    elif method == "eldar_sentence":
+        idxs = []
+        sentences = []
+        cleaned_query = (
+            kwargs.get("filter_query", "")
+            .replace("*", "")
+            .replace("|", "OR")
+            .replace("+", "AND")
+            .replace("-", "AND NOT")
+        )
+        keyword_query = build_query(cleaned_query)
+        for i, review in enumerate(data.text):
+            sents = sent_tokenize(review)
+            for sent in sents:
+                match = keyword_query.filter([sent])
+                if len(match) > 0:
+                    sentences.append(sent)
+                    idxs.append(i)
+        new_data = data.iloc[idxs].copy()
+        new_data["extraction"] = sentences
+    # Drop modified text if it is repeated in the same review
+    new_data = new_data.drop_duplicates(subset=["id", "text", "extraction"])
+    return new_data
+
+
+def embed_text(text, model_url, batch_size):
+    """Embed text using TF hub model"""
+    print("Downloading & loading embedding model...")
+    embed = hub.KerasLayer(model_url)
+    # Unsure if need to embed in batches. If so uncomment the code below.
+    embeddings = []
+    for i in tqdm(range(0, len(text), batch_size)):
+        vecs = embed(text[i : i + batch_size])["outputs"]
+        embeddings.append(vecs)
+    embeddings = np.vstack(embeddings)
+    return embeddings

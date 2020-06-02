@@ -1,0 +1,87 @@
+def _stamp_r(A, nodes, val):
+    nodes = [n - 1 for n in nodes if n > 0]
+    A[nodes[0],nodes[0]] += 1/val
+    if len(nodes) < 2:
+        return A
+    A[nodes[1],nodes[1]] += 1/val
+    A[nodes[0],nodes[1]] += -1/val
+    A[nodes[1],nodes[0]] += -1/val
+    return A
+
+@jit(nopython=True)
+def _stamp_jit(A, nodes, val):
+    nodes = [n - 1 for n in nodes if n > 0]
+    A[nodes[0],nodes[0]] += 1/val
+    if len(nodes) < 2:
+        return A
+    A[nodes[1],nodes[1]] += 1/val
+    A[nodes[0],nodes[1]] += -1/val
+    A[nodes[1],nodes[0]] += -1/val
+    return A
+
+def _stamp_c(A, nodes, val):
+    nodes = [n - 1 for n in nodes if n > 0]
+    A[nodes[0],nodes[0]] += val
+    if len(nodes) < 2:
+        return A
+    A[nodes[1],nodes[1]] += val
+    A[nodes[0],nodes[1]] += -val
+    A[nodes[1],nodes[0]] += -val
+    return A
+
+def _stamp_r2(A1, nodes, val, n_source):
+    for n, sign in zip(nodes, [1,-1]):
+        if n-1 < 0:
+            continue
+        A1[-n_source, n-1] += sign
+        A1[n-1, -n_source] += sign
+    A1[-n_source, -n_source] -= val
+    return A1
+
+def _stamp_c2(A1, A2, nodes, val, n_source):
+    for n, sign in zip(nodes, [1,-1]):
+        if n-1 < 0:
+            continue
+        A1[n-1, -n_source] += sign
+        A2[-n_source, n-1] -= sign * val    
+    A1[-n_source, -n_source] += 1
+    return A1, A2
+
+def _stamp_v(A, s, nodes, val, n_source):
+    s[-1] = val
+    for n, sign in zip(nodes, [-1,1]):
+        if n-1 < 0:
+            continue
+        A[-n_source, n-1] += sign
+        A[n-1, -n_source] += sign
+    return A, s
+
+def _stamp_vcvs(A, nodes, ctrl_nodes, val, n_source):
+    s[-1] = val
+    for n, sign in zip(nodes, [-1,1]):
+        if n-1 < 0:
+            continue
+        A[-n_source, n-1] += sign
+        A[n-1, -n_source] += sign
+        
+    for n, sign in zip(ctrl_nodes, [-1,1]):  # might need to swap around those signs
+        if n-1 < 0:
+            continue
+        A[-n_source, n-1] += val * sign
+    return A
+
+def _stamp_i(s, nodes, val, n_source):
+    for n, sign in zip(nodes, [-1,1]):
+        if n-1 < 0:
+            continue
+        s[n-1] += val * sign
+    return s
+
+def _stamp_l(A1, A2, nodes, val, n_source):
+    for n, sign in zip(nodes, [1,-1]):
+        if n-1 < 0:
+            continue
+        A1[-n_source, n-1] += sign
+        A1[n-1, -n_source] += sign
+    A2[-n_source, -n_source] -= val
+    return A1, A2

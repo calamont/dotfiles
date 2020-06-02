@@ -1,0 +1,24 @@
+import argparse
+import pandas as pd
+from nltk.tokenize import sent_tokenize
+
+parser = argparse.ArgumentParser()
+parser.add_argument("file")
+parser.add_argument("save_file")
+parser.add_argument("match")
+args = parser.parse_args()
+
+df = pd.read_csv(args.file)
+
+sent_df = pd.DataFrame(columns=df.columns)
+sent_df["sentence"] = []
+n_sents = 0
+for i, review in enumerate(df.text):
+    sents = sent_tokenize(review)
+    for sent in sents:
+        if args.match in sent:
+            sent_df.loc[n_sents,df.columns] = df.iloc[i]
+            sent_df.loc[n_sents,"sentence"] = sent
+            n_sents += 1
+
+sent_df.to_csv(args.save_file)

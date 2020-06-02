@@ -1,0 +1,321 @@
+time 1585318827
+new [description:"First task" entry:"1585318827" modified:"1585318827" status:"pending" uuid:"9c1c8aef-1001-4c27-b7f2-dca8fd8f7857"]
+---
+time 1585318847
+old [description:"First task" entry:"1585318827" modified:"1585318827" status:"pending" uuid:"9c1c8aef-1001-4c27-b7f2-dca8fd8f7857"]
+new [description:"First task" end:"1585318847" entry:"1585318827" modified:"1585318847" status:"completed" uuid:"9c1c8aef-1001-4c27-b7f2-dca8fd8f7857"]
+---
+time 1585319425
+new [description:"test item" entry:"1585319425" modified:"1585319425" status:"pending" uuid:"c8c6fe4d-142c-4ef9-9455-e128a04e93d2"]
+---
+time 1585319444
+old [description:"test item" entry:"1585319425" modified:"1585319425" status:"pending" uuid:"c8c6fe4d-142c-4ef9-9455-e128a04e93d2"]
+new [description:"test item" end:"1585319444" entry:"1585319425" modified:"1585319444" status:"completed" uuid:"c8c6fe4d-142c-4ef9-9455-e128a04e93d2"]
+---
+time 1585322997
+new [description:"Update on official repo" entry:"1585322997" modified:"1585322997" status:"pending" uuid:"69d549cf-2a4a-4ce8-9d81-305a0b59626e"]
+---
+time 1585323016
+new [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585323016" status:"pending" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+---
+time 1585323052
+old [description:"Update on official repo" entry:"1585322997" modified:"1585322997" status:"pending" uuid:"69d549cf-2a4a-4ce8-9d81-305a0b59626e"]
+new [description:"Update on official repo" end:"1585323052" entry:"1585322997" modified:"1585323052" status:"completed" uuid:"69d549cf-2a4a-4ce8-9d81-305a0b59626e"]
+---
+time 1585323107
+new [description:"Read other ML tasks and determine overlap with your work" entry:"1585323107" modified:"1585323107" status:"pending" uuid:"d123c51a-4000-4f8b-af2e-dedfc86b75e1"]
+---
+time 1585323343
+new [description:"Validating clusters using stats" entry:"1585323343" modified:"1585323343" status:"pending" uuid:"2d3d7d4b-d85e-43e4-8b6b-7980b64cb6ab"]
+---
+time 1585323427
+new [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1585323427" status:"pending" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+---
+time 1585323527
+new [description:"Search for other libraries that can perform scalable clustering" entry:"1585323527" modified:"1585323527" status:"pending" uuid:"a798b587-ef45-4c24-9b45-79b9e5e1f38d"]
+---
+time 1585323840
+new [description:"Include metadata (inconsistency etc.) to nodes in the dendrogram" entry:"1585323840" modified:"1585323840" status:"pending" uuid:"851d6ea3-d121-4fc6-b026-cb8b7d779792"]
+---
+time 1585556977
+old [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585323016" status:"pending" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+new [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585556977" project:"eng" status:"pending" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+---
+time 1585557019
+old [description:"Read other ML tasks and determine overlap with your work" entry:"1585323107" modified:"1585323107" status:"pending" uuid:"d123c51a-4000-4f8b-af2e-dedfc86b75e1"]
+new [description:"Read other ML tasks and determine overlap with your work" entry:"1585323107" modified:"1585557019" project:"research" status:"pending" uuid:"d123c51a-4000-4f8b-af2e-dedfc86b75e1"]
+---
+time 1585557030
+old [description:"Validating clusters using stats" entry:"1585323343" modified:"1585323343" status:"pending" uuid:"2d3d7d4b-d85e-43e4-8b6b-7980b64cb6ab"]
+new [description:"Validating clusters using stats" entry:"1585323343" modified:"1585557030" project:"research" status:"pending" uuid:"2d3d7d4b-d85e-43e4-8b6b-7980b64cb6ab"]
+---
+time 1585557040
+old [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1585323427" status:"pending" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+new [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1585557040" project:"research" status:"pending" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+---
+time 1585557048
+old [description:"Search for other libraries that can perform scalable clustering" entry:"1585323527" modified:"1585323527" status:"pending" uuid:"a798b587-ef45-4c24-9b45-79b9e5e1f38d"]
+new [description:"Search for other libraries that can perform scalable clustering" entry:"1585323527" modified:"1585557048" project:"research" status:"pending" uuid:"a798b587-ef45-4c24-9b45-79b9e5e1f38d"]
+---
+time 1585557063
+old [description:"Include metadata (inconsistency etc.) to nodes in the dendrogram" entry:"1585323840" modified:"1585323840" status:"pending" uuid:"851d6ea3-d121-4fc6-b026-cb8b7d779792"]
+new [description:"Include metadata (inconsistency etc.) to nodes in the dendrogram" entry:"1585323840" modified:"1585557063" project:"eng" status:"pending" uuid:"851d6ea3-d121-4fc6-b026-cb8b7d779792"]
+---
+time 1585557151
+old [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585556977" project:"eng" status:"pending" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+new [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585557151" project:"eng" status:"pending" tags:"clustering" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+---
+time 1585557632
+old [description:"Read other ML tasks and determine overlap with your work" entry:"1585323107" modified:"1585557019" project:"research" status:"pending" uuid:"d123c51a-4000-4f8b-af2e-dedfc86b75e1"]
+new [description:"Read other ML tasks and determine overlap with your work" entry:"1585323107" modified:"1585557632" project:"research" status:"pending" tags:"highlight" uuid:"d123c51a-4000-4f8b-af2e-dedfc86b75e1"]
+---
+time 1585558564
+new [description:"Create script for running the Spacy pattern builder" entry:"1585558564" modified:"1585558564" status:"pending" uuid:"cea6fd55-e09e-4832-a128-c9ec4a7fc561"]
+---
+time 1585558618
+new [description:"Try building Spacy patterns using multiple training examples" entry:"1585558618" modified:"1585558618" status:"pending" uuid:"2193b48b-7e8c-4303-be53-ef7d4c7ea2f8"]
+---
+time 1585562230
+new [description:"Create dict for SRL information extraction" entry:"1585562230" modified:"1585562230" status:"pending" uuid:"c36704f6-bd0f-4ba4-8723-3f6cb3264ec8"]
+---
+time 1585562283
+old [description:"Create dict for SRL information extraction" entry:"1585562230" modified:"1585562230" status:"pending" uuid:"c36704f6-bd0f-4ba4-8723-3f6cb3264ec8"]
+new [description:"Create dict for SRL information extraction" entry:"1585562230" modified:"1585562283" project:"srl" status:"pending" tags:"week" uuid:"c36704f6-bd0f-4ba4-8723-3f6cb3264ec8"]
+---
+time 1585562375
+old [description:"Validating clusters using stats" entry:"1585323343" modified:"1585557030" project:"research" status:"pending" uuid:"2d3d7d4b-d85e-43e4-8b6b-7980b64cb6ab"]
+new [description:"Validating clusters using stats" entry:"1585323343" modified:"1585562375" project:"research" status:"pending" tags:"clustering,dendrogram" uuid:"2d3d7d4b-d85e-43e4-8b6b-7980b64cb6ab"]
+---
+time 1585562421
+old [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1585557040" project:"research" status:"pending" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+new [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1585562421" project:"research" status:"pending" tags:"clustering,dendrogram" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+---
+time 1585562568
+new [depends:"851d6ea3-d121-4fc6-b026-cb8b7d779792" description:"Aggregating nodes in dendrogram" entry:"1585562568" modified:"1585562568" project:"dendrogram" status:"pending" tags:"clustering" uuid:"1d52ea8d-a2a6-45a0-8763-18c59cff2e20"]
+---
+time 1585562725
+old [description:"Create script for running the Spacy pattern builder" entry:"1585558564" modified:"1585558564" status:"pending" uuid:"cea6fd55-e09e-4832-a128-c9ec4a7fc561"]
+new [description:"Create script for running the Spacy pattern builder" entry:"1585558564" modified:"1585562725" project:"spacy" status:"pending" uuid:"cea6fd55-e09e-4832-a128-c9ec4a7fc561"]
+---
+time 1585562739
+old [description:"Try building Spacy patterns using multiple training examples" entry:"1585558618" modified:"1585558618" status:"pending" uuid:"2193b48b-7e8c-4303-be53-ef7d4c7ea2f8"]
+new [description:"Try building Spacy patterns using multiple training examples" entry:"1585558618" modified:"1585562739" project:"spacy" status:"pending" uuid:"2193b48b-7e8c-4303-be53-ef7d4c7ea2f8"]
+---
+time 1585562839
+new [description:"Create setup to download cluster_and_export.py in template" entry:"1585562839" modified:"1585562839" status:"pending" uuid:"31d46c5a-56db-4bb6-88a6-727208f98a99"]
+---
+time 1585562891
+old [description:"Create setup to download cluster_and_export.py in template" entry:"1585562839" modified:"1585562839" status:"pending" uuid:"31d46c5a-56db-4bb6-88a6-727208f98a99"]
+new [description:"Create setup to download cluster_and_export.py in template" entry:"1585562839" modified:"1585562891" status:"pending" tags:"today" uuid:"31d46c5a-56db-4bb6-88a6-727208f98a99"]
+---
+time 1585563009
+old [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585557151" project:"eng" status:"pending" tags:"clustering" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+new [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585563009" project:"eng" status:"pending" tags:"clustering,today" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+---
+time 1585563049
+new [description:"Complete show and tell items on notion" entry:"1585563049" modified:"1585563049" status:"pending" tags:"today" uuid:"8ba2488e-1774-46df-8e3f-ec27134b01a8"]
+---
+time 1585563094
+old [description:"Complete show and tell items on notion" entry:"1585563049" modified:"1585563049" status:"pending" tags:"today" uuid:"8ba2488e-1774-46df-8e3f-ec27134b01a8"]
+new [description:"Complete show and tell items on notion" entry:"1585563049" modified:"1585563094" start:"1585563094" status:"pending" tags:"today" uuid:"8ba2488e-1774-46df-8e3f-ec27134b01a8"]
+---
+time 1585563130
+old [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585563009" project:"eng" status:"pending" tags:"clustering,today" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+new [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585563130" project:"eng" status:"pending" tags:"today" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+---
+time 1585565547
+old [description:"Complete show and tell items on notion" entry:"1585563049" modified:"1585563094" start:"1585563094" status:"pending" tags:"today" uuid:"8ba2488e-1774-46df-8e3f-ec27134b01a8"]
+new [description:"Complete show and tell items on notion" end:"1585565547" entry:"1585563049" modified:"1585565547" status:"completed" tags:"today" uuid:"8ba2488e-1774-46df-8e3f-ec27134b01a8"]
+---
+time 1585569078
+old [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585563130" project:"eng" status:"pending" tags:"today" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+new [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585569078" project:"eng" start:"1585569078" status:"pending" tags:"today" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+---
+time 1585569568
+old [description:"Update cluster_and_export.py on official repo" entry:"1585323016" modified:"1585569078" project:"eng" start:"1585569078" status:"pending" tags:"today" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+new [description:"Update cluster_and_export.py on official repo" end:"1585569568" entry:"1585323016" modified:"1585569568" project:"eng" status:"completed" tags:"today" uuid:"aee01368-5877-4aac-afb4-f97c76c69c1d"]
+---
+time 1585569632
+new [description:"Add documentation to struggle_dendrogram branch" entry:"1585569632" modified:"1585569632" project:"dendrogram" status:"pending" uuid:"bf91ab9d-81ec-4f62-86c3-094a5c80c5ca"]
+---
+time 1585569670
+old [description:"Read other ML tasks and determine overlap with your work" entry:"1585323107" modified:"1585557632" project:"research" status:"pending" tags:"highlight" uuid:"d123c51a-4000-4f8b-af2e-dedfc86b75e1"]
+new [description:"Read other ML tasks and determine overlap with your work" end:"1585569670" entry:"1585323107" modified:"1585569670" project:"research" status:"completed" tags:"highlight" uuid:"d123c51a-4000-4f8b-af2e-dedfc86b75e1"]
+---
+time 1585571260
+old [description:"Create setup to download cluster_and_export.py in template" entry:"1585562839" modified:"1585562891" status:"pending" tags:"today" uuid:"31d46c5a-56db-4bb6-88a6-727208f98a99"]
+new [description:"Create setup to download cluster_and_export.py in template" entry:"1585562839" modified:"1585571260" start:"1585571260" status:"pending" tags:"today" uuid:"31d46c5a-56db-4bb6-88a6-727208f98a99"]
+---
+time 1585576765
+old [description:"Create setup to download cluster_and_export.py in template" entry:"1585562839" modified:"1585571260" start:"1585571260" status:"pending" tags:"today" uuid:"31d46c5a-56db-4bb6-88a6-727208f98a99"]
+new [description:"Create setup to download cluster_and_export.py in template" end:"1585576765" entry:"1585562839" modified:"1585576765" status:"completed" tags:"today" uuid:"31d46c5a-56db-4bb6-88a6-727208f98a99"]
+---
+time 1585577125
+old [description:"Include metadata (inconsistency etc.) to nodes in the dendrogram" entry:"1585323840" modified:"1585557063" project:"eng" status:"pending" uuid:"851d6ea3-d121-4fc6-b026-cb8b7d779792"]
+new [description:"Include metadata (inconsistency etc.) to nodes in the dendrogram" entry:"1585323840" modified:"1585577125" project:"eng" start:"1585577125" status:"pending" uuid:"851d6ea3-d121-4fc6-b026-cb8b7d779792"]
+---
+time 1585583893
+old [description:"Include metadata (inconsistency etc.) to nodes in the dendrogram" entry:"1585323840" modified:"1585577125" project:"eng" start:"1585577125" status:"pending" uuid:"851d6ea3-d121-4fc6-b026-cb8b7d779792"]
+new [description:"Include metadata (inconsistency etc.) to nodes in the dendrogram" end:"1585583893" entry:"1585323840" modified:"1585583893" project:"eng" status:"completed" uuid:"851d6ea3-d121-4fc6-b026-cb8b7d779792"]
+---
+time 1585583936
+old [description:"Validating clusters using stats" entry:"1585323343" modified:"1585562375" project:"research" status:"pending" tags:"clustering,dendrogram" uuid:"2d3d7d4b-d85e-43e4-8b6b-7980b64cb6ab"]
+new [description:"Validating clusters using stats" entry:"1585323343" modified:"1585583936" status:"pending" tags:"clustering,dendrogram" uuid:"2d3d7d4b-d85e-43e4-8b6b-7980b64cb6ab"]
+---
+time 1585584096
+old [description:"Search for other libraries that can perform scalable clustering" entry:"1585323527" modified:"1585557048" project:"research" status:"pending" uuid:"a798b587-ef45-4c24-9b45-79b9e5e1f38d"]
+new [description:"Search for other libraries that can perform scalable clustering" entry:"1585323527" modified:"1585584096" status:"pending" tags:"clustering" uuid:"a798b587-ef45-4c24-9b45-79b9e5e1f38d"]
+---
+time 1585584120
+old [description:"Validating clusters using stats" entry:"1585323343" modified:"1585583936" status:"pending" tags:"clustering,dendrogram" uuid:"2d3d7d4b-d85e-43e4-8b6b-7980b64cb6ab"]
+new [description:"Validating clusters using stats" entry:"1585323343" modified:"1585584120" status:"pending" tags:"clustering" uuid:"2d3d7d4b-d85e-43e4-8b6b-7980b64cb6ab"]
+---
+time 1585640816
+old [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1585562421" project:"research" status:"pending" tags:"clustering,dendrogram" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+new [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1585640816" project:"dendrogram" status:"pending" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+---
+time 1585641455
+new [description:"Improve efficiecy of labelling nodes" entry:"1585641455" modified:"1585641455" project:"dendrogram" status:"pending" uuid:"f0670e4a-bd19-43c9-a4c7-50f6ff0d5b0b"]
+---
+time 1585745980
+new [description:"Abstract for materials paper" due:"1586041199" entry:"1585745980" modified:"1585745980" project:"mat_paper" status:"pending" uuid:"3f697850-7dce-4917-a925-4e3085ec96c7"]
+---
+time 1585757601
+new [description:"Update ML task list for your validation stats" entry:"1585757601" modified:"1585757601" status:"pending" uuid:"ea5705f8-3e0d-4906-80ca-cfeda61b6a9d"]
+---
+time 1585757612
+old [description:"Validating clusters using stats" entry:"1585323343" modified:"1585584120" status:"pending" tags:"clustering" uuid:"2d3d7d4b-d85e-43e4-8b6b-7980b64cb6ab"]
+new [description:"Validating clusters using stats" end:"1585757612" entry:"1585323343" modified:"1585757612" status:"completed" tags:"clustering" uuid:"2d3d7d4b-d85e-43e4-8b6b-7980b64cb6ab"]
+---
+time 1585821480
+old [description:"Create dict for SRL information extraction" entry:"1585562230" modified:"1585562283" project:"srl" status:"pending" tags:"week" uuid:"c36704f6-bd0f-4ba4-8723-3f6cb3264ec8"]
+new [description:"Create dict for SRL information extraction" entry:"1585562230" modified:"1585821480" project:"srl" start:"1585821480" status:"pending" tags:"week" uuid:"c36704f6-bd0f-4ba4-8723-3f6cb3264ec8"]
+---
+time 1585821544
+new [description:"Put pipes between keywords" entry:"1585821544" modified:"1585821544" project:"dendrogram" status:"pending" tags:"week" uuid:"45351f92-a481-45f4-87d9-adbf3b95d627"]
+---
+time 1585821584
+old [description:"Update ML task list for your validation stats" entry:"1585757601" modified:"1585757601" status:"pending" uuid:"ea5705f8-3e0d-4906-80ca-cfeda61b6a9d"]
+new [description:"Update ML task list for your validation stats" entry:"1585757601" modified:"1585821584" status:"pending" tags:"today" uuid:"ea5705f8-3e0d-4906-80ca-cfeda61b6a9d"]
+---
+time 1585821610
+old [description:"Add documentation to struggle_dendrogram branch" entry:"1585569632" modified:"1585569632" project:"dendrogram" status:"pending" uuid:"bf91ab9d-81ec-4f62-86c3-094a5c80c5ca"]
+new [description:"Add documentation to struggle_dendrogram branch" end:"1585821610" entry:"1585569632" modified:"1585821610" project:"dendrogram" status:"completed" uuid:"bf91ab9d-81ec-4f62-86c3-094a5c80c5ca"]
+---
+time 1585842518
+old [description:"Update ML task list for your validation stats" entry:"1585757601" modified:"1585821584" status:"pending" tags:"today" uuid:"ea5705f8-3e0d-4906-80ca-cfeda61b6a9d"]
+new [description:"Update ML task list for your validation stats" end:"1585842518" entry:"1585757601" modified:"1585842518" status:"completed" tags:"today" uuid:"ea5705f8-3e0d-4906-80ca-cfeda61b6a9d"]
+---
+time 1585842526
+old [description:"Create dict for SRL information extraction" entry:"1585562230" modified:"1585821480" project:"srl" start:"1585821480" status:"pending" tags:"week" uuid:"c36704f6-bd0f-4ba4-8723-3f6cb3264ec8"]
+new [description:"Create dict for SRL information extraction" end:"1585842526" entry:"1585562230" modified:"1585842526" project:"srl" status:"completed" tags:"week" uuid:"c36704f6-bd0f-4ba4-8723-3f6cb3264ec8"]
+---
+time 1585902789
+old [description:"Put pipes between keywords" entry:"1585821544" modified:"1585821544" project:"dendrogram" status:"pending" tags:"week" uuid:"45351f92-a481-45f4-87d9-adbf3b95d627"]
+new [description:"Put pipes between keywords" entry:"1585821544" modified:"1585902789" project:"dendrogram" start:"1585902789" status:"pending" tags:"week" uuid:"45351f92-a481-45f4-87d9-adbf3b95d627"]
+---
+time 1585902811
+old [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1585640816" project:"dendrogram" status:"pending" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+new [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1585902811" project:"dendrogram" start:"1585902811" status:"pending" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+---
+time 1585903383
+new [description:"Check duplication removal for errors" entry:"1585903383" modified:"1585903383" project:"dendrogram" status:"pending" uuid:"52ca843e-aec6-4744-965e-9e97f787b659"]
+---
+time 1585927037
+new [description:"Remove or replace common words with UNK" entry:"1585927037" modified:"1585927037" project:"dendrogram" status:"pending" uuid:"6ef0bb17-e269-4594-ad30-c58d99eeb4c6"]
+---
+time 1586161942
+new [description:"Update show and tell" entry:"1586161942" modified:"1586161942" status:"pending" tags:"today" uuid:"fe197914-a1e1-4cec-9b63-5b1a2999b878"]
+---
+time 1586161966
+old [description:"Put pipes between keywords" entry:"1585821544" modified:"1585902789" project:"dendrogram" start:"1585902789" status:"pending" tags:"week" uuid:"45351f92-a481-45f4-87d9-adbf3b95d627"]
+new [description:"Put pipes between keywords" end:"1586161966" entry:"1585821544" modified:"1586161966" project:"dendrogram" status:"completed" tags:"week" uuid:"45351f92-a481-45f4-87d9-adbf3b95d627"]
+---
+time 1586162017
+old [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1585902811" project:"dendrogram" start:"1585902811" status:"pending" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+new [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1586162017" project:"dendrogram" start:"1585902811" status:"pending" tags:"today" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+---
+time 1586173158
+old [description:"Update show and tell" entry:"1586161942" modified:"1586161942" status:"pending" tags:"today" uuid:"fe197914-a1e1-4cec-9b63-5b1a2999b878"]
+new [description:"Update show and tell" entry:"1586161942" modified:"1586173158" start:"1586173158" status:"pending" tags:"today" uuid:"fe197914-a1e1-4cec-9b63-5b1a2999b878"]
+---
+time 1586174319
+old [description:"Update show and tell" entry:"1586161942" modified:"1586173158" start:"1586173158" status:"pending" tags:"today" uuid:"fe197914-a1e1-4cec-9b63-5b1a2999b878"]
+new [description:"Update show and tell" end:"1586174319" entry:"1586161942" modified:"1586174319" status:"completed" tags:"today" uuid:"fe197914-a1e1-4cec-9b63-5b1a2999b878"]
+---
+time 1586264804
+old [description:"Compare top cluster keywords with known struggles in dataset" entry:"1585323427" modified:"1586162017" project:"dendrogram" start:"1585902811" status:"pending" tags:"today" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+new [description:"Compare top cluster keywords with known struggles in dataset" end:"1586264804" entry:"1585323427" modified:"1586264804" project:"dendrogram" status:"completed" tags:"today" uuid:"29d15fb0-aee1-4e66-82f1-1337d0bd67b9"]
+---
+time 1586348404
+old [description:"Abstract for materials paper" due:"1586041199" entry:"1585745980" modified:"1585745980" project:"mat_paper" status:"pending" uuid:"3f697850-7dce-4917-a925-4e3085ec96c7"]
+new [description:"Abstract for materials paper" due:"1586041199" end:"1586348404" entry:"1585745980" modified:"1586348404" project:"mat_paper" status:"completed" uuid:"3f697850-7dce-4917-a925-4e3085ec96c7"]
+---
+time 1586350771
+new [description:"Node search function" entry:"1586350771" modified:"1586350771" project:"dendrogram" status:"pending" uuid:"d5831694-7f43-4553-801e-4447b29c3b91"]
+---
+time 1586364429
+new [description:"Make function for grabbing text from lower nodes" entry:"1586364429" modified:"1586364429" project:"dendrogram" status:"pending" uuid:"27c096d2-552c-4d9c-a378-c4ffdde7e9cf"]
+---
+time 1587024843
+new [description:"Censor data for dendrogram evaluation" entry:"1587024843" modified:"1587024843" project:"dendrogram" status:"pending" tags:"today" uuid:"b5d37649-28cc-40c8-9298-a9f3be3a116a"]
+---
+time 1587024907
+old [description:"Censor data for dendrogram evaluation" entry:"1587024843" modified:"1587024843" project:"dendrogram" status:"pending" tags:"today" uuid:"b5d37649-28cc-40c8-9298-a9f3be3a116a"]
+new [description:"Censor data for dendrogram evaluation" entry:"1587024843" modified:"1587024907" project:"dendrogram" start:"1587024907" status:"pending" tags:"today" uuid:"b5d37649-28cc-40c8-9298-a9f3be3a116a"]
+---
+time 1587367785
+new [description:"Read 10 pages from 21" entry:"1587367785" modified:"1587367785" status:"pending" tags:"week" uuid:"24f795c0-24e7-428c-9299-584d4ffd0961"]
+---
+time 1587367809
+old [description:"Read 10 pages from 21" entry:"1587367785" modified:"1587367785" status:"pending" tags:"week" uuid:"24f795c0-24e7-428c-9299-584d4ffd0961"]
+new [description:"Read 10 pages from 21" due:"1587682800" entry:"1587367785" modified:"1587367809" status:"pending" tags:"week" uuid:"24f795c0-24e7-428c-9299-584d4ffd0961"]
+---
+time 1587370602
+new [description:"Add show and tell items" entry:"1587370602" modified:"1587370602" status:"pending" tags:"today" uuid:"f6c22454-7004-41de-b61a-b36c939c689a"]
+---
+time 1587455743
+old [description:"Add show and tell items" entry:"1587370602" modified:"1587370602" status:"pending" tags:"today" uuid:"f6c22454-7004-41de-b61a-b36c939c689a"]
+new [description:"Add show and tell items" end:"1587455743" entry:"1587370602" modified:"1587455743" status:"completed" tags:"today" uuid:"f6c22454-7004-41de-b61a-b36c939c689a"]
+---
+time 1587464940
+new [description:"Get spacy patterns for a cluster" entry:"1587464940" modified:"1587464940" project:"spacy" status:"pending" uuid:"37142ef0-a17a-4be8-a09d-b8df10308d12"]
+---
+time 1587464968
+old [description:"Censor data for dendrogram evaluation" entry:"1587024843" modified:"1587024907" project:"dendrogram" start:"1587024907" status:"pending" tags:"today" uuid:"b5d37649-28cc-40c8-9298-a9f3be3a116a"]
+new [description:"Censor data for dendrogram evaluation" end:"1587464968" entry:"1587024843" modified:"1587464968" project:"dendrogram" status:"completed" tags:"today" uuid:"b5d37649-28cc-40c8-9298-a9f3be3a116a"]
+---
+time 1587970697
+old [description:"Read 10 pages from 21" due:"1587682800" entry:"1587367785" modified:"1587367809" status:"pending" tags:"week" uuid:"24f795c0-24e7-428c-9299-584d4ffd0961"]
+new [description:"Read 10 pages from 21" due:"1587682800" end:"1587970697" entry:"1587367785" modified:"1587970697" status:"completed" tags:"week" uuid:"24f795c0-24e7-428c-9299-584d4ffd0961"]
+---
+time 1587970751
+new [description:"Read 10 pages from 32" entry:"1587970751" modified:"1587970751" status:"pending" tags:"week" uuid:"56913a03-4377-4b97-9ef1-9484c2dadb90"]
+---
+time 1588240316
+new [description:"Cosine cross-entropy score for assessing embeddings" entry:"1588240316" modified:"1588240316" status:"pending" tags:"dendrogram" uuid:"e63ded14-bf5c-440b-b18c-2bcb65cc8439"]
+---
+time 1588350049
+new [description:"Finish reading paper" due:"1588633200" entry:"1588350049" modified:"1588350049" status:"pending" uuid:"b15a508b-85b8-419e-90ba-6a522b09d72b"]
+---
+time 1589182470
+old [description:"Read 10 pages from 32" entry:"1587970751" modified:"1587970751" status:"pending" tags:"week" uuid:"56913a03-4377-4b97-9ef1-9484c2dadb90"]
+new [description:"Read 10 pages from 32" end:"1589182470" entry:"1587970751" modified:"1589182470" status:"completed" tags:"week" uuid:"56913a03-4377-4b97-9ef1-9484c2dadb90"]
+---
+time 1589182487
+new [description:"Read 10 pages from 73" entry:"1589182487" modified:"1589182487" status:"pending" uuid:"067748a2-dfd2-4055-bdbd-372839849a41"]
+---
+time 1589185579
+new [description:"Read 10 pages from 54" entry:"1589185579" modified:"1589185579" status:"pending" uuid:"860e4be8-e120-44c4-a879-e9da7eaf0379"]
+---
+time 1589185590
+old [description:"Read 10 pages from 73" entry:"1589182487" modified:"1589182487" status:"pending" uuid:"067748a2-dfd2-4055-bdbd-372839849a41"]
+new [description:"Read 10 pages from 73" end:"1589185590" entry:"1589182487" modified:"1589185590" status:"completed" uuid:"067748a2-dfd2-4055-bdbd-372839849a41"]
+---
+time 1590996976
+old [description:"Read 10 pages from 54" entry:"1589185579" modified:"1589185579" status:"pending" uuid:"860e4be8-e120-44c4-a879-e9da7eaf0379"]
+new [description:"Read 10 pages from 54" end:"1590996976" entry:"1589185579" modified:"1590996976" status:"completed" uuid:"860e4be8-e120-44c4-a879-e9da7eaf0379"]
+---
+time 1590996991
+new [description:"Read 10 pages from 64" entry:"1590996991" modified:"1590996991" status:"pending" uuid:"f91a8a8d-3813-4862-9e11-02f620ed4ed5"]
+---

@@ -1,0 +1,31 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[[source]]
+url = "https://pypi.klydo.io"
+verify_ssl = true
+name = "klydo"
+
+[dev-packages]
+
+[packages]
+klydo = "*"
+pandas = "*"
+nltk = "*"
+scipy = "*"
+networkx = "*"
+tensorflow-hub = "*"
+tensorflow = "*"
+tqdm = "*"
+sklearn = "*"
+jupyterlab = "*"
+eldar = "*"
+unidecode = "*"
+cython = "*"
+s3fs = "*"
+gensim = "*"
+
+[requires]
+python_version = "3.7"

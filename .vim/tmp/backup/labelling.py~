@@ -1,0 +1,52 @@
+import pandas as pd
+
+def label_extractions(data, label_lookup, label_type):
+    """Labels extractions accordint to "gold standard" struggle sentences.
+
+    Performs a pairwise comparison between all the extractions and the struggle 
+    sentences. Does a symmetric comparison to account for extractions being 
+    greater or smaller in length than the struggle sentence. Consider two different
+    approaches to struggle extraction.
+
+    struggle_sentence = "I have a pollen allergy."
+    label = "Pollen alleries"
+    
+    extraction1 = "pollen allergy"
+    extraction2 = "I have issues in spring. I have a pollen allergy. It sucks."
+    
+    By comparing if `(extraction in struggle_sentence)` and 
+    `(struggle_sentence in extaction)` then both these extraction can be given 
+    the appropriate "Pollen allergies" label. This is a bit hacky and should be
+    updated when we get a chance.
+    
+    Args:
+        data (pandas.DataFrame): Extracted text from reviews in "extraction" 
+            column. The fields ["asin", "id", "text"] must exist in the remaining
+            columns.
+        label_lookup (dict): A dictionary in the form {struggle_sentence: label}.
+    Returns:
+        pandas.DataFrame similar to `data` but with a "label" column with 
+        predicted labels for the extractions.
+    """
+
+    rows = []
+    for _, extract_row in data.iterrows():
+        extraction = extract_row.extraction.lower()
+        if len(extraction) < 2:
+            continue  # ignore zero or single char extractions
+        labelled = False
+        for struggle_sent, label in label_lookup.items():
+            if (extraction in struggle_sent.lower() 
+                or struggle_sent.lower() in extraction):
+                rows.append(_add_label(extract_row, label, label_type, struggle_sent))
+                labelled = True
+        if not labelled:
+            rows.append(_add_label(extract_row, "noise", label_type, ""))
+    return pd.DataFrame(rows)
+
+def _add_label(row, label, label_type, sentence):
+    """Adds label to copy of row."""
+    new_row = row.copy()
+    new_row[label_type] = label
+    new_row["struggle_sentence"] = sentence
+    return new_row

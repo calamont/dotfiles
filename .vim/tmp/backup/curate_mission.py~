@@ -1,0 +1,43 @@
+"""Parses Excel file for the asin and review ids for a mission's struggles/substruggles."""
+import os
+import re
+import sys
+import json
+import argparse
+import pandas as pd
+from ast import literal_eval
+
+parser = argparse.ArgumentParser()
+parser.add_argument("file", type=str, help="Excel file of report struggles.")
+parser.add_argument(
+    "save_file", type=str, help="Name of .json file to save results to."
+)
+args = parser.parse_args()
+
+reviews = {}
+queries = {}
+export = pd.read_csv(args.file)  # read all sheets in
+
+for i, substruggle in enumerate(export.Label):
+    keywords = export.iloc[i,3]
+    if "[cluster]" in keywords:
+        keywords = []
+        ids = []
+        entry = export.iloc[i,4:].values
+        for e in entry:
+            sents, id_ = literal_eval(e)
+            keywords.extend(sents)
+            ids.append(id_)
+    else:
+        ids = export.iloc[i,4:].tolist()
+        # keywords = re.sub(r"[()*\"\\]", "", keywords)
+        # keywords = [k.strip() for k in keywords.split("|")]
+    clean_ids = [os.path.splitext(i)[0] + ".json" for i in ids]
+    reviews[substruggle] = ids
+    queries[substruggle] = keywords
+        
+with open(args.save_file, "w") as f:
+    json.dump(reviews, f)
+
+with open("query_" + args.save_file, "w") as f:
+    json.dump(queries, f)

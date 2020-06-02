@@ -11,8 +11,23 @@
 	path = .vim/custom_themes/awesome_vim
 	url = https://github.com/rafi/awesome-vim-colorschemes.git
 [submodule "/Users/cal_lamont/dotfiles/.vim/pack/bundle/start/vim-tmux-navigator"]
-	path = /Users/cal_lamont/dotfiles/.vim/pack/bundle/start/vim-tmux-navigator
+	path = .vim/pack/bundle/start/vim-tmux-navigator
 	url = https://github.com/christoomey/vim-tmux-navigator.git
 [submodule "/Users/cal_lamont/dotfiles/.vim/pack/bundle/start/airline"]
-	path = /Users/cal_lamont/dotfiles/.vim/pack/bundle/start/airline
+	path = .vim/pack/bundle/start/airline
 	url = https://github.com/vim-airline/vim-airline.git
+[submodule "/Users/cal_lamont/dotfiles/.vim/pack/bundle/start/airline-themes"]
+	path = .vim/pack/bundle/start/airline-themes
+	url = https://github.com/vim-airline/vim-airline-themes.git
+[submodule "/Users/cal_lamont/dotfiles/.vim/pack/bundle/start/surround"]
+	path = .vim/pack/bundle/start/surround
+	url = https://github.com/tpope/vim-surround.git
+[submodule "/Users/cal_lamont/dotfiles/.vim/pack/bundle/start/repeat"]
+	path = .vim/pack/bundle/start/repeat
+	url = https://github.com/tpope/vim-repeat.git
+[submodule "/Users/cal_lamont/dotfiles/.vim/pack/bundle/start/ctrlp"]
+	path = .vim/pack/bundle/start/ctrlp
+	url = https://github.com/ctrlpvim/ctrlp.vim.git
+[submodule ".vim/pack/bundle/start/fugitive"]
+	path = .vim/pack/bundle/start/fugitive
+	url = https://github.com/tpope/vim-fugitive.git

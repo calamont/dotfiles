@@ -1,0 +1,15 @@
+from sacred import Experiment
+from sacred.observers import MongoObserver
+
+ex = Experiment()
+ex.observers.append(MongoObserver())
+
+@ex.config
+def cfg():
+    test = "test"
+    thing = "thing"
+
+@ex.capture
+@ex.automain
+def main(test, thing):
+    print(test, thing)

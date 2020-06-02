@@ -1,0 +1,187 @@
+"""A script for hierarchical clustering, exporting output as a D3 dendrogram"""
+import argparse
+import numpy as np
+from nltk.corpus import stopwords
+from preprocessing import load_data, preprocess_data, embed_text
+from tree import create_tree, merge_nodes, label_nodes, save_tree
+
+stop_words = stopwords.words()
+stop_words.extend(["i", "me", "he", "her", "she", ",", "since", "cause", ".", "..."])
+stop_words = [w.lower() for w in stop_words]
+
+
+def main(args):
+    custom_stop_words = [w.strip().lower() for w in args.stop_words.split(",")]
+    stop_words.extend(custom_stop_words)
+
+    print("\nLoading data...")
+    data = load_data(args.file)
+    data = preprocess_data(data, method=args.preprocess_method, args=args)
+    print(f"Original size of data to embed and cluster: {len(data)}")
+
+    # Split data using args.n_trees to determine indices for splitting
+    # if n_trees = 1 => split_indices = empty array, i.e. no split
+    # if n_trees > 1 => split_indices =  array of indices to split along
+    split_indices = [_ * len(data) // args.n_trees for _ in range(1, args.n_trees)]
+    for (_i, _data) in enumerate(np.split(data, split_indices)):
+        if args.max_size is not None:
+            _data = _data.sample(n=args.max_size)
+        print(f"Batch size of data to embed and cluster: {len(_data)}")
+        if len(_data) > 30_000:
+            print(
+                f"To many data points ({len(_data)}). 30,000 examples will be randomly sampled to prevent running out of memory."
+            )
+            _data = _data.sample(30_000, random_state=0)
+
+        print("\nEmbedding data...")
+        embeddings = embed_text(
+            _data["extraction"], args.tf_hub_model, args.embed_batch_size
+        )
+
+        ids = _data.id.values
+        asins = _data.asin.values
+        tree, rootnode = create_tree(
+            embeddings,
+            args.linkage_method,
+            args.linkage_metric,
+            args.merge_threshold,
+            args.linkage_depth,
+            _data[["extraction", "id", "asin"]],
+            args.threshold_attr,
+        )
+        tree = merge_nodes(tree, args.leaf_threshold, args.threshold_attr)
+        tree = label_nodes(
+            tree,
+            _data,
+            label_method=args.label_method,
+            preprocess_method="extraction",
+            n_keywords=args.n_keywords,
+            stop_words=stop_words,
+            # custom_stop_words=custom_stop_words,
+        )
+
+    # ids = data.id.values
+    # asins = data.asin.values
+    # tree, rootnode = create_tree(
+    #     embeddings,
+    #     args.linkage_method,
+    #     args.linkage_metric,
+    #     args.merge_threshold,
+    #     args.linkage_depth,
+    #     data[["extraction", "id", "asin"]],
+    #     args.threshold_attr,
+    # )
+    # tree = merge_nodes(tree, args.leaf_threshold, args.threshold_attr)
+    # tree = label_nodes(
+    #     tree,
+    #     data,
+    #     label_method=args.label_method,
+    #     preprocess_method="extraction",
+    #     n_keywords=args.n_keywords,
+    #     stop_words=stop_words,
+    #     custom_stop_words=custom_stop_words,
+    # )
+    save_tree(tree, rootnode, args.save_file, args.no_upload, args.save_csv, data, args)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Script for embedding and clustering reviews."
+    )
+    parser.add_argument("file", type=str, help="File containing text for embedding.")
+    parser.add_argument("save_file", type=str, help="File name to save dendrogram to.")
+    parser.add_argument(
+        "--no_upload",
+        action="store_true",
+        help="Prevents .json files being directly uploaded to the LCV s3 directory.",
+    )
+    parser.add_argument(
+        "--save_csv", action="store_true", help="Saves .csv of filtered data."
+    )
+    parser.add_argument(
+        "--max_size",
+        default=None,
+        type=int,
+        help="To limit size of data for clustering. 1 samples entire dataset.",
+    )
+    parser.add_argument(
+        "--preprocess_method",
+        type=str,
+        default="filter_text",
+        help="Method for preprocessing text.",
+    )
+    parser.add_argument(
+        "--tf_hub_model",
+        type=str,
+        default="https://tfhub.dev/google/universal-sentence-encoder-large/4",
+        help="URL for tensorflow hub model.",
+    )
+    parser.add_argument("--embed_batch_size", type=int, default=100)
+    parser.add_argument(
+        "--linkage_method",
+        type=str,
+        default="ward",
+        help="Method used to calculate distance between clusters (e.g. ward)",
+    )
+    parser.add_argument(
+        "--linkage_metric",
+        type=str,
+        default="euclidean",
+        help="Distance metric used. Defaults to euclidean.",
+    )
+    parser.add_argument(
+        "--linkage_depth",
+        type=int,
+        default=5,
+        help="The number of links below a node used to calculate its metrics",
+    )
+    parser.add_argument(
+        "--leaf_threshold",
+        type=float,
+        default=0.5,
+        help="The inter-cluster distance below which nodes and all their children are merged together.",
+    )
+    parser.add_argument(
+        "--merge_threshold",
+        type=float,
+        default=0.8,
+        help="The inter-cluster distance above which nodes are not merged and become root nodes.",
+    )
+    parser.add_argument(
+        "--label_method",
+        type=str,
+        default="CountVectorizer",
+        help="The number of keywords used to summarise the reviews in each node.",
+    )
+    parser.add_argument(
+        "--n_keywords",
+        type=int,
+        default=5,
+        help="The number of keywords used to summarise the reviews in each node.",
+    )
+    parser.add_argument(
+        "--stop_words",
+        type=str,
+        default="",
+        help="Words to exclude as keywords for the node summaries.",
+    )
+    parser.add_argument(
+        "--filter_query",
+        type=str,
+        default="",
+        help="The query to filter by. For `filter_text` and `filter_sentence` this should be a comma separated list of words. For `eldar_sentence` this should be a boolean search query.",
+    )
+    parser.add_argument(
+        "--threshold_attr",
+        type=str,
+        default="dist",
+        help="The node attribute used to define the leaf and merging thresholds. This would make sense with 'size', 'dist' or 'inconsistency'.",
+    )
+    parser.add_argument(
+        "--n_trees",
+        type=int,
+        default=1,
+        help="The number of trees to split the data into. Defaults to 1 (no splitting).",
+    )
+    args = parser.parse_args()
+    main(args)

@@ -1,0 +1,13 @@
+Revert "Update README.md"
+
+This reverts commit 8d7606622346645cb5f909f617ce97da35cacd8e.
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch evaluation_pipeline
+# Your branch is up to date with 'origin/evaluation_pipeline'.
+#
+# Changes to be committed:
+#	modified:   evaluation_pipeline/README.md
+#

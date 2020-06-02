@@ -1,0 +1,106 @@
+"""A script for hierarchical clustering, exporting output as a D3 dendrogram
+
+Args:
+    file (str): File containing text for embedding.
+    extraction_method (str): Method for extracting struggles.
+    label (str): 'struggle' or 'substruggle'. Defaults to 'substruggle'.
+    embedding_score_method (str): Method for evaluating embeddings.
+        Defaults to 'knn_dendrogram_score'.
+    clustering_score_method (str): Method for evaluating dendrogram.
+        Defaults to 'f1_dendrogram_score'.
+    tf_hub_model (str): URL for tensorflow hub model.
+        Defaults to 'https://tfhub.dev/google/universal-sentence-encoder-large/4'.
+    embed_batch_size (int): Embedding batch size. Defaults to 100.
+    linkage_method (str): Method used to calculate distance between clusters. Defaults to ward.
+    linkage_metric (str): Distance metric used. Defaults to euclidean.
+"""
+# Imports for evaluation pipeline.
+import sys
+sys.path.append('../sentence_dendrogram')
+
+import argparse
+import extraction
+import evaluation
+import pandas as pd
+
+from evaluation import extraction_stats
+from preprocessing import embed_text
+from postprocessing import save
+from labelling import label_extractions
+from tree import create_tree
+
+# Setting up Sacred experiment.
+import ssl
+from setup import get_secret
+from sacred import Experiment
+from sacred.observers import MongoObserver
+
+ex = Experiment()
+secret = get_secret("sacred_mongo_credentials")
+ex.observers.append(MongoObserver(
+    url=f"mongodb+srv://{secret['username']}:{secret['password']}@sacred-k4oew.mongodb.net",
+    username=secret["username"],
+    password=secret["password"],
+    db_name="sacred",
+    ssl_cert_reqs=ssl.CERT_NONE)
+    )
+
+
+@ex.config
+def cfg():
+    file = None
+    extraction_method = "extract_sentences"
+    label = "substruggle"
+    embedding_score_method = "knn_embedding_score"
+    clustering_score_method = "f1_dendrogram_score"
+    tf_hub_model = "https://tfhub.dev/google/universal-sentence-encoder-large/4"
+    embed_batch_size = 100
+    linkage_method = "ward"
+    linkage_metric = "euclidean"
+    embedding_score = None
+    cluster_score = None
+
+@ex.capture
+@ex.automain
+def main(file, 
+         extraction_method,
+         label,
+         embedding_score_method,
+         clustering_score_method,
+         tf_hub_model,
+         embed_batch_size,
+         linkage_method,
+         linkage_metric):
+
+    print("\nLoading data...")
+    labelled_data = pd.read_csv(file)
+    label_lookup = {k:v for k, v in labelled_data[["sentence", label]].values}
+    
+    # Create dataframe of just the reviews for extraction. This is then compared
+    # to the gold standard sentence extractions.
+    data = (labelled_data.drop_duplicates(subset=["text"])
+                         .drop(columns=["sentence", "struggle", "substruggle"]))
+    data = getattr(extraction, extraction_method)(data)
+    print("\nLabelling data...")
+    data = label_extractions(data, label_lookup, label)
+    extract_stats = extraction_stats(data, labelled_data, label)
+    print("\nEmbedding data...")
+    embeddings = embed_text(
+        data["extraction"], tf_hub_model, embed_batch_size
+    )
+    embedding_eval_method = getattr(evaluation, embedding_score_method)
+    embedding_score = embedding_eval_method(embeddings, data["label"].values)
+
+    tree, rootnode = create_tree(
+        embeddings,
+        linkage_method,
+        linkage_metric,
+        1000,
+        5,
+        data[["extraction", "id", "asin"]],
+        "dist",
+    )
+    clustering_eval_method = getattr(evaluation, clustering_score_method)
+    cluster_score = clustering_eval_method(tree, data)
+    save(tree, data)
+    print(f"\nDone!\nEmbedding score: {embedding_score}\nClustering score: {cluster_score}")

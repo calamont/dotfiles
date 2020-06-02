@@ -1,0 +1,179 @@
+import os
+import re
+import sys
+import json
+import klydo
+
+import numpy as np
+import networkx as nx
+
+from nltk.tokenize import word_tokenize
+from collections import Counter, defaultdict
+from scipy.cluster.hierarchy import linkage, inconsistent, to_tree
+from sklearn.feature_extraction.text import CountVectorizer
+
+
+def create_tree(
+    X, link_method, dist_metric, merge_threshold, linkage_depth, df, merge_attr="dist"
+):
+    """Create hierarchical cluster tree"""
+    print("\nClustering data...")
+    links = linkage(X, method=link_method, metric=dist_metric)
+    metrics = create_metric_dict(links, d=linkage_depth)
+    print("\nCreating tree...")
+    rootnode, nodelist = to_tree(links, rd=True)
+    print("\nCreating DiGraph")
+    G = nx.DiGraph()
+    for node in nodelist:
+        G = add_edge(G, node, merge_threshold, links, metrics, df, merge_attr)
+    return G, rootnode
+
+
+def create_metric_dict(linkage, d):
+    """Collates the metrics of a node into a dict based on the `d` links below."""
+    metrics = inconsistent(linkage, d=d)
+    metric_dict = defaultdict(dict)
+    for i in range(len(linkage)):
+        idx = i + len(linkage) + 1
+        metric_dict[idx]["dist"] = linkage[i, 2]
+        metric_dict[idx]["size"] = linkage[i, 3]
+        metric_dict[idx]["link_mean"] = metrics[i, 0]
+        metric_dict[idx]["link_std"] = metrics[i, 1]
+        metric_dict[idx]["inconsistency"] = metrics[i, 3]
+    return metric_dict
+
+
+def add_edge(G, node, merge_threshold, linkage, metrics, df, attr="dist"):
+    """Adds node to NetworkX DiGraph."""
+    if node.is_leaf():
+        G.add_node(
+            node.get_id(),
+            id_=node.get_id(),
+            children=[],
+            leaf=True,
+            leaf_nodes=[node.get_id()],
+            dist=0.0,
+            size=1,
+            link_mean=0,
+            link_std=0,
+            inconsistency=0,
+        )
+        # Add all columns of passed dataframe as attributes of leaf
+        G.nodes[node.get_id()].update(df.iloc[node.get_id()].to_dict())
+    elif metrics[node.get_id()][attr] > merge_threshold:
+        return G
+    else:
+        left = node.get_left()
+        right = node.get_right()
+        # If any child was not included in tree due to thresholding then
+        # dont include parent node either.
+        if not all([child.get_id() in G.nodes() for child in [left, right]]):
+            return G
+        G.add_node(
+            node.get_id(),
+            id_=node.get_id(),
+            children=[left.get_id(), right.get_id()],
+            leaf=False,
+            leaf_nodes=G.nodes[left.get_id()]["leaf_nodes"]
+            + G.nodes[right.get_id()]["leaf_nodes"],
+            dist=metrics[node.get_id()].get("dist", 0),
+            size=metrics[node.get_id()].get("size", 1),
+            link_mean=metrics[node.get_id()].get("link_mean", 0),
+            link_std=metrics[node.get_id()].get("link_std", 0),
+            inconsistency=metrics[node.get_id()].get("inconsistency", 0),
+        )
+        G.add_edges_from(
+            [(node.get_id(), left.get_id()), (node.get_id(), right.get_id())]
+        )
+    return G
+
+
+def label_nodes(
+    G,
+    df,
+    label_method="frequency",
+    preprocess_method="text",
+    n_keywords=None,
+    stop_words=None,
+):
+    """Label each node based on members of cluster."""
+    print("\nLabelling nodes...")
+    if label_method == "CountVectorizer":
+        cv = CountVectorizer(stop_words=stop_words)
+        counts = cv.fit_transform(df[preprocess_method])
+        # To find word for idx position in count matrix
+        idx_lookup = {v: k for k, v in cv.vocabulary_.items()}
+        for node in G.nodes.values():
+            descendants = node["leaf_nodes"]
+            node_counts = np.array(counts[descendants, :].sum(axis=0)).flatten()
+            freq_idxs = np.argsort(node_counts)[:-n_keywords:-1]
+            freq_words = [idx_lookup[idx] for idx in freq_idxs]
+            node["keywords"] = "  -  ".join(freq_words) + " -" * 80
+    return G
+
+
+def merge_nodes(G, leaf_threshold, attr="dist"):
+    """Merge descendants of node if any immediate child is a leaf."""
+    merged_nodes = []
+    for node_id in reversed(list(G.nodes)):
+        if (node_id in merged_nodes) or (G.nodes[node_id]["leaf"]):
+            continue
+        if G.nodes[node_id][attr] < leaf_threshold:
+            node_attrs = combine_descendants(G, node_id)
+            merged_nodes.extend(node_attrs.pop(["id_"]))
+            nx.set_node_attributes(G, {node_id: node_attrs})
+    G.remove_nodes_from(merged_nodes)
+    return G
+
+
+def combine_descendants(G, node_id):
+    """Combine attributes of descendants of a node"""
+    node_attrs = defaultdict(list)
+    descendants = nx.descendants(G, node_id)
+    if len(descendants) == 0:  # node_id is leaf node
+        for key, val in G.nodes[node_id].items():
+            try:
+                node_attrs[key].extend(val)
+            except TypeError:
+                node_attrs[key].append(val)
+    else:  # collect text of leaves below node_id
+        for id_ in descendants:
+            node = G.nodes[id_]
+            if node["leaf"]:
+                for key, val in node.items():
+                    try:
+                        node_attrs[key].extend(val)
+                    except TypeError:
+                        node_attrs[key].append(val)
+            else:
+                node_attrs["id_"].append(node["id_"])
+    # node_attrs["text"] = ", ".join(node_attrs["text"])
+    node_attrs["leaf"] = True
+    node_attrs.pop("dist")
+    return node_attrs
+
+
+def save_tree(G, rootnode, save_file, local=True, save_csv=False, df=None, args=None):
+    if args is None:
+        args = {}
+    nodelink = nx.node_link_data(G)
+    print("\nSaving file to disk...")
+    with open(save_file, "w") as f:
+        json.dump(nodelink, f, indent=2)
+    if not local:
+        print("\nUploading file to s3...")
+        klydo.s3.bucket.upload_data(
+            save_file,
+            bucket="lcv.klydo.io",
+            key="data/trees/" + os.path.basename(save_file),
+        )
+    with open(os.path.splitext(os.path.basename(save_file))[0] + ".log", "a") as f:
+        f.write("\n" + save_file + "\n")
+        if args is not None:
+            for k, v in vars(args).items():
+                f.write(f"{k}: {v}\n")
+        command = " ".join(sys.argv)
+        f.write("command: " + command + "\n\n")
+    if save_csv:
+        save_file = os.path.splitext(save_file)[0] + "_filtered.csv"
+        df.to_csv(save_file)

@@ -1,0 +1,10 @@
+#include <iostream>
+#include <cstdint>
+
+int main()
+{
+    int x{ 120 };
+    std::cout << sizeof(x) << "\n";
+    std::cout << x;
+    return 0;
+}

@@ -1,0 +1,10 @@
+#include <iostream>
+
+int main()
+{
+    unsigned short x{ 5 };
+    unsigned short y{ 3 };
+    int z{};
+    z = y - x;
+    std::cout << x << " - " <<  y << " = " << z << "\n";
+}

@@ -1,0 +1,160 @@
+# Data handling
+import pandas as pd
+import numpy as np
+from sklearn.datasets import make_blobs
+from sklearn.metrics import pairwise_distances
+from embedding import load_model, embed_text, reduce_dimensions
+
+import io
+import os
+import base64
+
+
+# Bokeh libraries
+from bokeh.io import output_file, output_notebook
+from bokeh.plotting import figure, show, curdoc
+from bokeh.models import (
+    ColumnDataSource,
+    Circle,
+    HoverTool,
+    DataTable,
+    TableColumn,
+    FileInput,
+    PreText
+)
+from bokeh.layouts import row, column, gridplot
+from bokeh.models.widgets import Tabs, Panel
+
+# Prepare the data
+X, labels = make_blobs(100, n_features=2, random_state=1)
+# data = pd.DataFrame(dict(x=X[:,0], y=X[:,1]))
+data = pd.DataFrame(dict(text=[], x=[], y=[]))
+data = ColumnDataSource(data)
+
+# Determine where the visualization will be rendered
+# output_file('blobs.html')  # Render to static HTML, or
+output_notebook()  # Render inline in a Jupyter Notebook
+
+# Specify the selection tools to be made available
+select_tools = ["box_select", "lasso_select", "poly_select", "tap", "reset"]
+# Set up the figure(s)
+fig = figure(
+    title="Embedding Projector", tools=select_tools, plot_height=400, plot_width=400
+)
+fig.outline_line_color = "black"
+fig.axis.axis_line_width = 0
+fig.axis.major_label_text_color = None
+# fig.axis.minor_label_text_color = None
+fig.axis.major_tick_line_color = None
+fig.axis.minor_tick_line_color = None
+fig.grid.grid_line_color = None
+
+
+# Connect to and draw the data
+cr = fig.circle(
+    x="x",
+    y="y",
+    source=data,
+    color="black",
+    size=10,
+    alpha=0.5,
+    # set visual properties for selected glyphs
+    selection_color="firebrick",
+    # set visual properties for non-selected glyphs
+    nonselection_fill_alpha=0.2,
+    nonselection_fill_color="blue",
+    nonselection_line_color="firebrick",
+    nonselection_line_alpha=1.0,
+    hover_fill_color="firebrick",
+    hover_line_color="white",
+)
+
+# Format the tooltip
+tooltips = [("text", "@text")]
+fig.add_tools(HoverTool(tooltips=tooltips, renderers=[cr]))
+
+# Organize the layout
+
+# ------- right column ------------- #
+columns = [
+    TableColumn(field="text", title="text"),
+]
+data_table = DataTable(
+    source=data, columns=columns, width=200, height=380, margin=(25, 0, 0, 0)
+)
+
+text_table = DataTable(
+    source=data, columns=columns, width=800, height=400, editable=True
+)
+
+console = PreText(text="""Welcome to the embedding viewer!
+To begin, load a .csv or .txt file of documents.""",
+    width=500, height=30, margin=(25,0,0,0))
+
+def update_console(message, next_func):
+    console.text = message
+    if next_func:
+        curdoc().add_next_tick_callback(next_func)
+
+def upload_data(attr, old, new):
+    print("Uploaded data")
+    # Decoding and loading file into pandas
+    decoded = base64.b64decode(file_input.value)
+    f = io.BytesIO(decoded)
+    ext = os.path.splitext(file_input.filename)[-1]
+    header = 0 if ext == ".csv" else None
+    df = pd.read_csv(f, header=header)
+    console.text = "Loading embedding model..."
+    curdoc().add_next_tick_callback(lambda: load_model(df=df))
+
+def load_model(df):
+    # Embedding data
+    print("Loading tensorflow model")
+    embedder = load_model("https://tfhub.dev/google/universal-sentence-encoder-large/4")
+    print("Embedding text")
+    console.text = "Embedding text"
+    curdoc().add_next_tick_callback(lambda: embed_text(df=df,  model=embedder))
+
+def embed_text(df, model):
+    embeddings = embed_text(df.iloc[:,0], model)
+    console.text = "Calculating nearest neighbour distances..."
+    curdoc().add_next_tick_callback(lambda: calculate_distance(df=df, embeddings=embeddings))
+
+def calculate_distances(df, embeddings):
+    # Calculate distances
+    dists = pairwise_distances(embeddings)
+    sorted_dists = np.sort(dists, axis=1)
+    nn = np.argsort(dists, axis=1)
+    nn_df = pd.concat([df, pd.DataFrame(nn)], axis=1)
+    console.text = "Reducing dimensions..."
+    curdoc().add_next_tick_callback(lambda: dimension_reduction(nn=nn, df=df, embeddings=embeddings))
+
+def dimension_reduction(nn, df, embeddings):
+    print("Dimension reduction")
+    data_shape = df.shape
+    embeddings = reduce_dimensions(embeddings)
+    df["x"] = embeddings[:, 0]
+    df["y"] = embeddings[:, 1]
+
+    # Updating Bokeh objects
+    text_dict = {"index": list(range(len(df))), **df.to_dict(orient="list")}
+    data.data = text_dict
+    columns = [
+        TableColumn(field=col, title=col)
+        for i, col in enumerate(df.columns)
+        if i < data_shape[1]
+    ]
+    text_table.columns = columns
+    tooltips = [("sentence", "@sentence")]
+    fig.add_tools(HoverTool(tooltips=tooltips, renderers=[cr]))
+    console.text = "Done!"
+
+
+file_input = FileInput(accept=".csv, .txt", margin=(25, 0, 0, 0))
+file_input.on_change("value", upload_data)
+
+
+# right_col = row(data_table, column(console, file_input))
+right_col = column(console, file_input)
+
+curdoc().add_root(column(row(fig, right_col), text_table))

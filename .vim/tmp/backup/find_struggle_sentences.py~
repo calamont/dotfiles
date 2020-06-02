@@ -1,0 +1,72 @@
+import re
+import json
+import tqdm
+import argparse
+import pandas as pd
+from eldar import build_query
+from nltk.tokenize import sent_tokenize
+
+parser = argparse.ArgumentParser()
+parser.add_argument("report", type=str, help=".csv file of mission report reviews.")
+parser.add_argument("save_file", type=str, help="File to save .csv as.")
+parser.add_argument("queries", type=str, help=".json file of report reviews.")
+args = parser.parse_args()
+
+with open(args.queries, "r") as f:
+    queries = json.load(f)
+
+df = pd.read_csv(args.report)
+dfs = []
+for struggle, query in queries.items():
+    reviews = df[df.label == struggle].copy()
+    idxs = []
+    sentences = []
+
+    if isinstance(query, list):
+
+        def query_sentence(sent):
+            """Replicate output of Eldar filter."""
+            for q in query:
+                print(q)
+                q = re.sub(r"\\u\w\w\w+", "", q)
+                print(q)
+                print()
+                if (q.lower() in sent[0]) or (sent[0] in q.lower()):
+                    return [sent]
+            return []
+
+    elif isinstance(query, str):
+        cleaned_query = (
+            query.replace("*", "")
+            .replace('"', "")
+            .replace("\\", "")
+            .replace("|", "OR")
+            .replace("+", "AND")
+            .replace("-", "AND NOT")
+        )
+        query_sentence = build_query(cleaned_query[1:-1]).filter
+
+    for i, review in enumerate(reviews.text):
+        labelled = False  # to check if errors in query
+        sents = sent_tokenize(review)
+        for sent in sents:
+            sent = sent.lower().replace("-", " ")
+            if len(sent) < 2:
+                continue  # ignore single char strings (often punctuation)
+            match = query_sentence([sent.lower()])
+            if len(match) > 0:
+                sentences.append(sent)
+                idxs.append(i)
+                labelled = True
+        if not labelled:
+            # If no labels given then ask the user to select the best sentence.
+            sent = "no sentence found"
+            sentences.append(sent)
+            idxs.append(i)
+
+    new_data = reviews.iloc[idxs].copy()
+    new_data["sentence"] = sentences
+    dfs.append(new_data)
+
+df = pd.concat(dfs)
+df.to_csv(args.save_file)

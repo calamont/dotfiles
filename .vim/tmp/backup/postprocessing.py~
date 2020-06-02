@@ -1,0 +1,27 @@
+import json
+import klydo
+import networkx as nx
+from tempfile import NamedTemporaryFile
+from datetime import datetime
+
+def save(G, df):
+    timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M") 
+    with NamedTemporaryFile("w+") as f:
+        json_file = ("reviews/curated/evaluation_output/trees/" 
+                     + timestamp + "_dendrogram.json")
+        nodelink = nx.node_link_data(G)
+        json.dump(nodelink, f, indent=2)
+        klydo.s3.bucket.upload_data(
+            f.name,
+            bucket="klydo-data-acquisition",
+            key=json_file
+        )
+    with NamedTemporaryFile("w+") as f:
+        csv_file = ("reviews/curated/evaluation_output/extractions/" 
+                    +  timestamp + "_extractions.csv")
+        df.to_csv(f.name)
+        klydo.s3.bucket.upload_data(
+            f.name,
+            bucket="klydo-data-acquisition",
+            key=csv_file
+        )

@@ -1,0 +1,165 @@
+import numpy as np
+from operator import itemgetter
+from collections import Counter, defaultdict
+from sklearn.metrics.pairwise import cosine_similarity
+
+
+def nearest_neighbours(target, embeddings, k=5):
+    """
+    Return index and cosine similarity for k nearest neighboughs of target embedding
+
+    args
+        target (np.array): embedding
+        embeddings (np.array: array of all embeddings (including target)
+    """
+
+    sims = cosine_similarity(np.expand_dims(target, axis=0), embeddings)[0]
+    min_indxs = np.argsort(sims)[::-1][1:min(k+1, embeddings.shape[1])]
+
+    return min_indxs, [sims[i] for i in min_indxs]
+
+
+
+def knn_embedding_score(embeddings, labels, kk=None):
+    """
+    For each cluster, return the KNN score for each of it's respective sentences. KNN score
+    of a sentence is the proportion of it's k neighbours that belong to the same class, weighted
+    by their normalised distance to the target sentence.
+
+    - score = 1: all k NN are in the correct class
+    - score = 0: none of K NN are in the correct class
+    - if 1 of the k NN is in the correct class, score will be higher if neighbour is closer.
+    Args
+        embeddings (np.array): embeddings that correspond to the rows in the reviews_df
+        labels (np.array): dataframe of reviews (requires columns for 'text' and 'cluster')
+        kk (int): number of neighbours to consider (default: set to 1 - #_elems_in_cluster)
+    Return
+        dict of {cluster: [knn scores for each sentence in cluster], ...}
+    """
+
+    struggles = np.unique(labels)
+    scores = {}
+
+    for struggle in struggles:
+        targets = [i[0] for i in np.argwhere(struggles == struggle)]
+        if kk:
+            k = kk
+        else:
+            k = len(targets) - 1
+
+        clust_scores = []
+
+        for i in targets:
+            score = {}
+
+            neighbours, sims = nearest_neighbours(embeddings[i], embeddings, k=k)
+            total = np.sum(sims)
+
+            for i, nbour in enumerate(neighbours):
+                if labels[nbour] == struggle:
+                    score[i] = sims[i]
+            clust_scores.append(sum(score.values()) / total)
+
+        scores[struggle] = clust_scores
+
+    return scores
+
+
+def f1_dendrogram_score(G, label_data, lbl_level="substruggle"):
+    counter = Counter(label_data["label"])
+    # TODO decide whether to keep this and adjust
+    # if struggle:
+    #     label_data_counter = label_data[label_data["struggle"] == struggle]
+    #     counter = Counter(label_data_counter["label"])
+
+    # create a dict of asin id and label
+    asin_lbl_dict = _create_asin_lbl_dict(label_data)
+    f1_results = f1_cluster_eval(G, counter, asin_lbl_dict)
+
+    # calculate overall f1 with and without noise
+    f1_results["overall"] = calculate_mean_results(f1_results)
+    f1_results["overall_without_noise"] = calculate_mean_results({res:f1_results[res] for res in f1_results if res not in ["noise", "overall"]})
+
+    return f1_results
+
+def calculate_mean_results(results):
+    mean_prec = np.mean([results[res]['precision'] for res in results])
+    mean_recall = np.mean([results[res]['recall'] for res in results])
+    mean_f1 = np.mean([results[res]['f1'] for res in results])
+    return (mean_prec, mean_recall, mean_f1)
+
+# create a dict of keys depending on the data level analysed - review or sentence and the lbl level
+def _create_asin_lbl_dict(data, extraction_col="extraction", label_col="label"):
+    asin_lbl_dict = defaultdict(list)
+    for index, row in data.iterrows():
+        asin_key = row["asin"] + "/" + row["id"] + "/" + row[extraction_col]
+        asin_lbl_dict[asin_key].append(row[label_col])
+    return asin_lbl_dict
+
+# run the f1 evaluation
+def f1_cluster_eval(G, counter, asin_lbl_dict):
+    f1_results = {}
+    # go through each label
+    for L_r in counter.keys():
+        # calculate the f1-score for a specific class L_r
+        # number of docs in class L_r
+        n_r = counter[L_r]
+        # keep track of f1_score for class L_r at each node S_i
+        f1_lbl_scores = []
+        for node in G.nodes:
+            cur_node = G.nodes[node]
+            # number of docs in this cluster is the number of descendants of the current node
+            n_i = len(cur_node["leaf_nodes"])
+            # number of docs that belong to class L_r and are in cluster S_i
+            n_ri = 0
+            # check if it is a leaf node
+            if cur_node['leaf']:
+                # Handle multiple extractions in a leaf node (in case merging was performed)
+                for asin_, id_, extraction_ in zip(cur_node['asin'],
+                                                    cur_node['review_id'],
+                                                    cur_node['extraction']):
+                    cur_node_key = asin_ + "/" + id_ + "/" + extraction_
+                    node_lbls = asin_lbl_dict[cur_node_key]
+                    if L_r in node_lbls:
+                        n_ri += 1
+            # otherwise find descendants that are leaf nodes
+            else:
+                # from the descendants find the number of docs that are in this cluster and belong to the class
+                for descendant in cur_node["leaf_nodes"]:
+                    # Handle multiple extractions in a leaf node (in case merging was performed)
+                    for asin_, id_, extraction_ in zip(G.nodes[descendant]['asin'],
+                                                        G.nodes[descendant]['review_id'],
+                                                        G.nodes[descendant]['extraction']):
+                        des_node_key = asin_ + "/" + id_ + "/" + extraction_
+                        des_labels = asin_lbl_dict[des_node_key]
+                        if L_r in des_labels:
+                            n_ri += 1
+            # calculate precision, recall and f1
+            recall_node = n_ri / n_r
+            precision_node = n_ri / n_i
+            if recall_node + precision_node == 0:
+                f1_node = 0.0
+            else:
+                f1_node = (2 * recall_node * precision_node) / (recall_node + precision_node)
+            f1_lbl_scores.append((node, precision_node, recall_node, f1_node))
+
+        # take the precision, recall and f1 for this label based on the node that has max f1-score
+        lbl_scores = max(f1_lbl_scores, key=itemgetter(3))
+        f1_results[L_r] = {"node": lbl_scores[0], "precision":lbl_scores[1], "recall":lbl_scores[2], "f1":lbl_scores[3]}
+
+    return f1_results
+
+
+def extraction_stats(extract_df, labelled_df, label_type):
+    """Compare extractions to labels and return simple summary statistics."""
+    n_extractions = extract_df.shape[0]
+    correct = extract_df[extract_df["label"]!="noise"]
+    n_correct = correct.shape[0]
+    
+    precision = n_correct / n_extractions
+    recall = n_correct / labelled_df.shape[0]
+    f1 = 2 * precision * recall / (precision + recall)
+    mean_label_n = n_correct / correct["text"].nunique()
+
+    return n_extractions, precision, recall, f1, mean_label_n
+

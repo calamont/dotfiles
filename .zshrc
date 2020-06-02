@@ -25,6 +25,7 @@ export PIPENV_PYTHON="$HOME/.pyenv/shims/python"
 alias icloud="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/"
 alias UCL="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/UCL"
 alias modules="cd /Users/cal_lamont/Library/Mobile\ Documents/com~apple~CloudDocs/programming/python/modules"
+alias weather="curl http://wttr.in/"
 
 # Allow colours for `ls` to be turned on. The specific colours can be
 # changed in the ANSI colours terminal preferences
