@@ -43,6 +43,8 @@ nnoremap <Leader>h zo
 nnoremap <Leader>, zO
 nnoremap <Leader>r zR
 nnoremap <Leader>m zM
+nnoremap <Leader>gi :G<CR>
+nnoremap Y y$
 
 let g:tmux_navigator_no_mappings = 1
 nnoremap <silent> <C-m> :TmuxNavigateLeft<cr>
@@ -61,13 +63,19 @@ vnoremap h gj
 vnoremap j h
 vnoremap k l
 
+" Change scroll down
+nnoremap <C-l> <C-e>
+
+" Move forward and back jumps
+nnoremap <C-i> <C-i>
+nnoremap <C-e> <C-o>
+
 " Moving around panes more easily"
 map <C-l> <C-w>k
 map <C-h> <C-w>j
 map <C-m> <C-w>h
-map <C-e> <C-w>l
+map <C-o> <C-w>l
 
-nnoremap <C-m> <C-i>
 inoremap <C-f> <right>
 inoremap <C-b> <left>
 
@@ -104,6 +112,11 @@ set mouse=a
 
 " Search down into folders. Provides tab-completion for all file-related tasks
 set path+=**
+tags=tags,.git/tags
+" Initialis fuzzy-like file finding in current buffer or split window
+nnoremap <Leader>o :find **
+nnoremap <Leader>v :vsplit **/
+nnoremap <Leader>s :split **/
 " Display all matching files when we tab complete
 set wildmenu
 set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.ico
@@ -121,11 +134,11 @@ let ayucolor="dark"   " for dark version of theme
 
 set t_Co=256
 " background=dark
-colorscheme ayu
-" colorscheme happy_hacking
-" colorscheme lucius
+" colorscheme ayu
+colorscheme gruvbox
 " colorscheme materialbox
 " colorscheme OceanicNext
+" colorscheme lucius
 " colorscheme pink-moon
 " colorscheme sierra
 " colorscheme base16-codeschool
@@ -186,3 +199,6 @@ augroup END
 if has('syntax') && has('eval')
   packadd! matchit
 endif
+
+" Change line number colours from theme
+highlight LineNr guifg=#bfbfbf

@@ -1,13 +1,22 @@
-Revert "Update README.md"
-
-This reverts commit 8d7606622346645cb5f909f617ce97da35cacd8e.
 
 # Please enter the commit message for your changes. Lines starting
 # with '#' will be ignored, and an empty message aborts the commit.
 #
-# On branch evaluation_pipeline
-# Your branch is up to date with 'origin/evaluation_pipeline'.
+# On branch clustering_characterisation
+# Your branch is up to date with 'origin/clustering_characterisation'.
 #
 # Changes to be committed:
-#	modified:   evaluation_pipeline/README.md
+#	modified:   clustering_characterisation/Pipfile
+#	modified:   clustering_characterisation/Pipfile.lock
+#	new file:   clustering_characterisation/characterise_cluster.py
+#	modified:   clustering_characterisation/clustering.py
+#	new file:   clustering_characterisation/fast_sklearn_agglom.csv
+#	modified:   clustering_characterisation/fastcluster.csv
+#	modified:   clustering_characterisation/graphs.ipynb
+#	modified:   clustering_characterisation/hdbscan.csv
+#	new file:   clustering_characterisation/kmeans_10.csv
+#	new file:   clustering_characterisation/kmeans_2.csv
+#	new file:   clustering_characterisation/kmeans_5.csv
+#	new file:   clustering_characterisation/scipy_agglom
+#	modified:   clustering_characterisation/scipy_agglom.csv
 #

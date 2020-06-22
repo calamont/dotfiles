@@ -6,10 +6,12 @@ sys.path.append("../")
 import argparse
 import extraction
 import evaluation
+import filtering
 import pandas as pd
 from preprocessing import embed_text
 from labelling import label_extractions
 from tree import create_tree
+
 
 
 def main(args):
@@ -22,17 +24,24 @@ def main(args):
     data = labelled_data.drop_duplicates(subset=["asin", "id", "text"]).drop(
         columns=["sentence", "label"]
     )
+
+    print("\nExtracting data..."))
     data = getattr(extraction, args.extraction_method)(data)
+
+    print("\nNoise filtering data..."))
+    data = getattr(filtering, args.filtering_method)(data, args.min_extraction_len)
 
     print("\nLabelling data...")
     data = label_extractions(data, label_lookup)
+
     print("\nEmbedding data...")
     embeddings = embed_text(
         data["extraction"], args.tf_hub_model, args.embed_batch_size
     )
     embedding_eval_method = getattr(evaluation, args.embedding_score_method)
-    embedding_score = embedding_eval_method(embeddings, labelled_data.label.values)
-
+    # embedding_score = embedding_eval_method(embeddings, labelled_data.label.values)
+    embedding_score = {}  # temporarily disabling because it takes a while
+    print("Clustering...")
     tree, rootnode = create_tree(
         embeddings,
         args.linkage_method,
@@ -43,10 +52,8 @@ def main(args):
         "dist",
     )
     clustering_eval_method = getattr(evaluation, args.clustering_score_method)
-    cluster_score = clustering_eval_method(tree, labelled_data.label.values)
-    print(
-        f"\nDone!\nEmbedding score: {embedding_score}\nClustering score: {cluster_score}"
-    )
+    cluster_score = clustering_eval_method(tree, data)
+    print(f"\nDone!\nEmbedding score: {embedding_score}\nClustering score: {cluster_score}")
 
 
 if __name__ == "__main__":
@@ -63,6 +70,18 @@ if __name__ == "__main__":
         type=str,
         default="extract_sentences",
         help="Method for extracting struggles.",
+    )
+    parser.add_argument(
+        "--filtering_method",
+        type=str,
+        default="length_filter",
+        help="Method for filtering extractions.",
+    )
+    parser.add_argument(
+        "--min_extraction_len",
+        type=int,
+        default=5,
+        help="Minimum number of words in extraction (threshold for noise filtering).",
     )
     parser.add_argument(
         "--embedding_score_method",

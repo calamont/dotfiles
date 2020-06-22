@@ -26,6 +26,10 @@ unidecode = "*"
 cython = "*"
 s3fs = "*"
 gensim = "*"
+sacred = "*"
+pymongo = "*"
+dnspython = "*"
+torch = "*"
 
 [requires]
 python_version = "3.7"

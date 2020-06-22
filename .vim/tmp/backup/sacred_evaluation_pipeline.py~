@@ -18,11 +18,15 @@ Args:
 import sys
 sys.path.append('../sentence_dendrogram')
 
+import os
+import json
 import argparse
 import extraction
 import evaluation
+import filtering
 import pandas as pd
 
+from pprint import pprint
 from evaluation import extraction_stats
 from preprocessing import embed_text
 from postprocessing import save
@@ -48,8 +52,11 @@ ex.observers.append(MongoObserver(
 
 @ex.config
 def cfg():
-    file = None
+    # file = None
+    file = "s3://klydo-data-acquisition/reviews/curated/csv/hair_loss_v4_sentences.csv"
     extraction_method = "extract_sentences"
+    filtering_method = "length_filter"
+    min_extraction_len = 5
     label = "substruggle"
     embedding_score_method = "knn_embedding_score"
     clustering_score_method = "f1_dendrogram_score"
@@ -57,13 +64,13 @@ def cfg():
     embed_batch_size = 100
     linkage_method = "ward"
     linkage_metric = "euclidean"
-    embedding_score = None
-    cluster_score = None
 
 @ex.capture
 @ex.automain
-def main(file, 
+def main(file,
          extraction_method,
+         filtering_method,
+         min_extraction_len,
          label,
          embedding_score_method,
          clustering_score_method,
@@ -74,16 +81,27 @@ def main(file,
 
     print("\nLoading data...")
     labelled_data = pd.read_csv(file)
-    label_lookup = {k:v for k, v in labelled_data[["sentence", label]].values}
-    
+
     # Create dataframe of just the reviews for extraction. This is then compared
     # to the gold standard sentence extractions.
     data = (labelled_data.drop_duplicates(subset=["text"])
-                         .drop(columns=["sentence", "struggle", "substruggle"]))
+                         .drop(columns=["sentence", "struggle", "substruggle"])
+            )
+
+    print("\nExtracting data...")
     data = getattr(extraction, extraction_method)(data)
+
+    print("\nNoise filtering data...")
+    data = getattr(filtering, filtering_method)(data, min_extraction_len)
+
     print("\nLabelling data...")
-    data = label_extractions(data, label_lookup, label)
-    extract_stats = extraction_stats(data, labelled_data, label)
+
+    data = label_extractions(data, labelled_data[["sentence", label]].values)
+    extract_stats = extraction_stats(data, labelled_data)
+    extraction_scores = dict(zip(["n_extractions", "precision", 
+                                  "recall", "f1", "n_labels_per_extraction"],
+                                  extract_stats))
+
     print("\nEmbedding data...")
     embeddings = embed_text(
         data["extraction"], tf_hub_model, embed_batch_size
@@ -101,6 +119,48 @@ def main(file,
         "dist",
     )
     clustering_eval_method = getattr(evaluation, clustering_score_method)
-    cluster_score = clustering_eval_method(tree, data)
-    save(tree, data)
-    print(f"\nDone!\nEmbedding score: {embedding_score}\nClustering score: {cluster_score}")
+    cluster_gt_score = clustering_eval_method(G=tree, label_data=data, gt_data=labelled_data, gt_label=label)
+    cluster_score = clustering_eval_method(G=tree, label_data=data)
+    output = save(tree, data)
+    
+    with open("pipeline_output.txt", "w") as f:
+        f.writelines("\n".join(output))
+    ex.add_artifact("pipeline_output.txt")
+    os.remove("pipeline_output.txt")
+
+    # Log data to sacred experiment
+    with open("extraction_scores.json", "w+") as f:
+        json.dump(extraction_scores, f, indent=2)
+    ex.add_artifact("extraction_scores.json")
+    os.remove("extraction_scores.json")
+
+    with open("embedding_scores.json", "w+") as f:
+        json.dump(embedding_score, f, indent=2)
+    ex.add_artifact("embedding_scores.json")
+    os.remove("embedding_scores.json")
+
+    with open("clustering_scores.json", "w+") as f:
+        json.dump(cluster_score, f, indent=2)
+    ex.add_artifact("clustering_scores.json")
+    os.remove("clustering_scores.json")
+
+    with open("clustering_gt_scores.json", "w+") as f:
+        json.dump(cluster_gt_score, f, indent=2)
+    ex.add_artifact("clustering_gt_scores.json")
+    os.remove("clustering_gt_scores.json")
+
+    ex.log_scalar("extraction recall", extraction_scores["recall"])
+    ex.log_scalar("extraction precision", extraction_scores["precision"])
+    ex.log_scalar("cluster f1", cluster_score["overall"][2])
+    ex.log_scalar("cluster precision", cluster_score["overall"][0])
+    ex.log_scalar("cluster recall", cluster_score["overall"][1])
+
+    print(f"\nDone!")
+    print(f"\nExtraction score:")
+    pprint(extraction_scores)
+    print(f"\nEmbedding score:")
+    pprint(embedding_score)
+    print(f"\nClustering score:")
+    pprint(cluster_score)
+    print("\nClustering GT score:")
+    pprint(cluster_gt_score)

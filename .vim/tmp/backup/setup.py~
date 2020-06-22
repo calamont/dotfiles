@@ -1,8 +1,45 @@
-from setuptools import setup
-from Cython.Build import cythonize
+from setuptools import setup, find_packages
 
 setup(
-    name='Hello world app',
-    ext_modules=cythonize("hello.pyx"),
+    name="klydo",
+    version="2.0.15",
+    description="A collection of reusable functions within Klydo",
+    url="https://github.com/klydo/klydo-utilities",
+    author="Klydo team",
+    author_email="dev@klydo.ai",
+    packages=find_packages(),
+    include_package_data=True,
+    install_requires=[
+        "elasticsearch>=6.1.1,<7.0.0",
+        "elasticsearch-dsl>=6.4.0,<7.0.0",
+        "aws-requests-auth>=0.4.1",
+        "boto3>=1.7.75",
+        "boto3-type-annotations>=0.3.1",
+        "plac>=0.9.6",
+        "wasabi>=0.2.1",
+        "requests>=2.19.1",
+        "networkx>=2.2",
+        "sacremoses>=0.0.19",
+        "typing-extensions>=3.7.4.1",
+        "gspread==3.6.0",
+    ],
+    extras_require={
+        "clustering": [
+            "scikit-learn>=0.21.2",
+            "numpy>=1.16.1",
+            "scipy>=1.2.1",
+            "nmslib>=1.7.3.6",
+            "tqdm>=4.32.2",
+            "networkx>=2.2",
+        ],
+        "claims": ["nltk>=3.2.5", "sacremoses>=0.0.19"],
+        "embedding": [
+            "gensim>=3.8.0",
+            "h5py>=2.9.0",
+            "nltk>=3.2.5",
+            "pandas>=0.24.2",
+            "scikit-learn>=0.21.2",
+        ],
+    },
     zip_safe=False,
 )

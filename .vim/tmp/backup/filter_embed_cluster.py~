@@ -52,35 +52,14 @@ def main(args):
         tree = merge_nodes(tree, args.leaf_threshold, args.threshold_attr)
         tree = label_nodes(
             tree,
-            _data,
             label_method=args.label_method,
             preprocess_method="extraction",
+            threshold = args.keyword_threshold, 
             n_keywords=args.n_keywords,
             stop_words=stop_words,
-            # custom_stop_words=custom_stop_words,
+            keywords_key=args.keywords_key
         )
 
-    # ids = data.id.values
-    # asins = data.asin.values
-    # tree, rootnode = create_tree(
-    #     embeddings,
-    #     args.linkage_method,
-    #     args.linkage_metric,
-    #     args.merge_threshold,
-    #     args.linkage_depth,
-    #     data[["extraction", "id", "asin"]],
-    #     args.threshold_attr,
-    # )
-    # tree = merge_nodes(tree, args.leaf_threshold, args.threshold_attr)
-    # tree = label_nodes(
-    #     tree,
-    #     data,
-    #     label_method=args.label_method,
-    #     preprocess_method="extraction",
-    #     n_keywords=args.n_keywords,
-    #     stop_words=stop_words,
-    #     custom_stop_words=custom_stop_words,
-    # )
     save_tree(tree, rootnode, args.save_file, args.no_upload, args.save_csv, data, args)
 
 
@@ -150,8 +129,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--label_method",
         type=str,
-        default="CountVectorizer",
-        help="The number of keywords used to summarise the reviews in each node.",
+        default="TfidfVectorizer",
+        help="The method used to generate the keywords for each cluster.",
+    )
+    parser.add_argument(
+        "--keyword_threshold",
+        type=float,
+        default=0,
+        help="The relevance threshold when generating the labels for the nodes. If CountVectorizer is used, this should be an int. If TfidfVectorizer is used, it should be a float value."
     )
     parser.add_argument(
         "--n_keywords",
@@ -164,6 +149,12 @@ if __name__ == "__main__":
         type=str,
         default="",
         help="Words to exclude as keywords for the node summaries.",
+    )
+    parser.add_argument(
+        "--keywords_key",
+        type=str,
+        default="keywords",
+        help="The attribute key to be used when saving the keywords for the nodes."
     )
     parser.add_argument(
         "--filter_query",

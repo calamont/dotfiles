@@ -17,6 +17,21 @@ def load_data(file):
 
 
 def preprocess_data(data, method, **kwargs):
+    """
+        Transforms data for embedding/clustering with one of the following methods, removes
+            duplicates and filters out noise.
+
+            filter_text: Use the whole review text. Matches reviews that contain any
+                word in filter_query if specified in kwargs, or returns all.
+
+            filter_sentence: Split the review text into sentences. Matches sentences
+                that contain any word in filter_query if specified in kwargs, or returns all.
+
+            eldar_sentence: Split the review text into sentences. Filter sentences
+                that match the provided ES query specified in filter_query. This uses the
+                eldar package to translate an ES query into boolean string matching
+                (https://github.com/kerighan/eldar).
+    """
     if method == "filter_text":
         reviews = []
         idxs = []
@@ -44,6 +59,7 @@ def preprocess_data(data, method, **kwargs):
                     idxs.append(i)
         new_data = data.iloc[idxs].copy()
         new_data["extraction"] = sentences
+
     elif method == "eldar_sentence":
         idxs = []
         sentences = []
@@ -64,8 +80,11 @@ def preprocess_data(data, method, **kwargs):
                     idxs.append(i)
         new_data = data.iloc[idxs].copy()
         new_data["extraction"] = sentences
+
     # Drop modified text if it is repeated in the same review
     new_data = new_data.drop_duplicates(subset=["id", "text", "extraction"])
+    new_data = new_data[new_data["extraction"].str.split().str.len() >= kwargs.get('min_length', 1)]
+
     return new_data
 
 

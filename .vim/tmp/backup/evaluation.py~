@@ -114,26 +114,18 @@ def f1_cluster_eval(G, counter, asin_lbl_dict):
             n_ri = 0
             # check if it is a leaf node
             if cur_node['leaf']:
-                # Handle multiple extractions in a leaf node (in case merging was performed)
-                for asin_, id_, extraction_ in zip(cur_node['asin'],
-                                                    cur_node['review_id'],
-                                                    cur_node['extraction']):
-                    cur_node_key = asin_ + "/" + id_ + "/" + extraction_
-                    node_lbls = asin_lbl_dict[cur_node_key]
-                    if L_r in node_lbls:
-                        n_ri += 1
+                cur_node_key = cur_node['asin'] + '/' + cur_node['id'] + '/' + cur_node['extraction']
+                node_lbls = asin_lbl_dict[cur_node_key]
+                if L_r in node_lbls:
+                    n_ri += 1
             # otherwise find descendants that are leaf nodes
             else:
                 # from the descendants find the number of docs that are in this cluster and belong to the class
                 for descendant in cur_node["leaf_nodes"]:
-                    # Handle multiple extractions in a leaf node (in case merging was performed)
-                    for asin_, id_, extraction_ in zip(G.nodes[descendant]['asin'],
-                                                        G.nodes[descendant]['review_id'],
-                                                        G.nodes[descendant]['extraction']):
-                        des_node_key = asin_ + "/" + id_ + "/" + extraction_
-                        des_labels = asin_lbl_dict[des_node_key]
-                        if L_r in des_labels:
-                            n_ri += 1
+                    des_node_key = G.nodes[descendant]['asin'] + '/' + G.nodes[descendant]['id'] + '/' + G.nodes[descendant]['extraction']
+                    des_labels = asin_lbl_dict[des_node_key]
+                    if L_r in des_labels:
+                        n_ri += 1
             # calculate precision, recall and f1
             recall_node = n_ri / n_r
             precision_node = n_ri / n_i
@@ -153,7 +145,7 @@ def f1_cluster_eval(G, counter, asin_lbl_dict):
 def extraction_stats(extract_df, labelled_df, label_type):
     """Compare extractions to labels and return simple summary statistics."""
     n_extractions = extract_df.shape[0]
-    correct = extract_df[extract_df["label"]!="noise"]
+    correct = extract_df[extract_df[label_type]!="noise"]
     n_correct = correct.shape[0]
     
     precision = n_correct / n_extractions

@@ -1,0 +1,9 @@
+#!/bin/sh
+if type ctags > /dev/null; then
+	# Run ctags on root directory of git repo.
+	echo "Found ctags!....1"
+	gitDir=$(git rev-parse --show-toplevel)  # get root of git working tree
+	ctags -R $gitDir  # add/update ctags in repo
+	# mv tags .git/tags  # hide tags in git repo
+	echo "Updated tags in" $gitDir
+fi
