@@ -1,22 +1,15 @@
+removed ctrlp and updated precommit hook
 
 # Please enter the commit message for your changes. Lines starting
 # with '#' will be ignored, and an empty message aborts the commit.
 #
-# On branch clustering_characterisation
-# Your branch is up to date with 'origin/clustering_characterisation'.
+# Date:      Mon Jun 22 17:20:59 2020 +0100
+#
+# On branch master
+# Your branch is ahead of 'origin/master' by 1 commit.
+#   (use "git push" to publish your local commits)
 #
 # Changes to be committed:
-#	modified:   clustering_characterisation/Pipfile
-#	modified:   clustering_characterisation/Pipfile.lock
-#	new file:   clustering_characterisation/characterise_cluster.py
-#	modified:   clustering_characterisation/clustering.py
-#	new file:   clustering_characterisation/fast_sklearn_agglom.csv
-#	modified:   clustering_characterisation/fastcluster.csv
-#	modified:   clustering_characterisation/graphs.ipynb
-#	modified:   clustering_characterisation/hdbscan.csv
-#	new file:   clustering_characterisation/kmeans_10.csv
-#	new file:   clustering_characterisation/kmeans_2.csv
-#	new file:   clustering_characterisation/kmeans_5.csv
-#	new file:   clustering_characterisation/scipy_agglom
-#	modified:   clustering_characterisation/scipy_agglom.csv
+#	modified:   .git-templates/hooks/pre-commit
+#	deleted:    .vim/pack/bundle/start/ctrlp
 #
