@@ -1,7 +1,0 @@
-#include <iostream>
-
-int main()
-{
-    unsigned int x{ 3000000000 };
-    std::cout << "x=" << x;
-}

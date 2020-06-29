@@ -1,40 +1,45 @@
-" An example for a vimrc file.
-"
-" Maintainer:	Bram Moolenaar <Bram@vim.org>
-" Last change:	2019 Jan 26
-"
-" To use it, copy it to
-"     for Unix and OS/2:  ~/.vimrc
-"	      for Amiga:  s:.vimrc
-"  for MS-DOS and Win32:  $VIM\_vimrc
-"	    for OpenVMS:  sys$login:.vimrc
+" Callum Lamont's vimrc
+scriptencoding utf-8
 
-" When started as "evim", evim.vim will already have done these settings, bail
-" out.
+" Default tab options.
+setlocal shiftwidth=4
+setlocal expandtab                                      " tabs are spaces
+setlocal tabstop=4                                      " number of visual spaces per TAB
+setlocal softtabstop=4                                  " number of spaces in tab when editing
+setlocal shiftround
+setlocal autoindent
+setlocal number                                         " show line numbers
+
 if v:progname =~? "evim"
   finish
 endif
 
 " Modify saving of backup files
 if exists("$SUDO_USER")
-    set nobackup                                  " don't create root owned files
-    set nowritebackup                             " don't create root owned files
-else                                              " keep backup files out of the way
-    set backupdir=~/local/.vim/tmp/backup
-    set backupdir+=~/.vim/tmp/backup
+    set nobackup                                 " don't create root owned files
+    set nowritebackup                            " don't create root owned files
+    set noswapfile                               " don't create root owned files
+    set noundofile                               " don't create root owned files
+else                                             " keep backup files out of the way
+    set backupdir=~/local/.vim/tmp/backup//      " // appends full file paths to dirs
+    set backupdir+=~/.vim/tmp/backup//
     set backupdir+=.
-    set directory=~/local/.vim/tmp/swapfiles
-    set directory+=~/.vim/tmp/swapfiles
+    set directory=~/local/.vim/tmp/swapfiles//
+    set directory+=~/.vim/tmp/swapfiles//
     set directory+=.
-    set undodir=~/local/.vim/tmp/undo
-    set undodir+=~/.vim/tmp/undo
+    set undodir=~/local/.vim/tmp/undo//
+    set undodir+=~/.vim/tmp/undo//
     set undodir+=.
+    set undofile
 endif
 
+" Infer and colour syntax using the filetype.
 filetype on
 syntax on  " turn on syntax highlighting
-" Change Leader key
-let mapleader = "\\"
+
+" Make space the leader key and backslash the space/<Right> key.
+let mapleader = " "
+nnoremap <bslash> <space>
 map <Leader><Leader> :nohlsearch<enter>
 nnoremap <Leader>i :set foldmethod:indent
 nnoremap <Leader>l zc
@@ -46,12 +51,11 @@ nnoremap <Leader>m zM
 nnoremap <Leader>gi :G<CR>
 nnoremap Y y$
 
-let g:tmux_navigator_no_mappings = 1
-nnoremap <silent> <C-m> :TmuxNavigateLeft<cr>
-nnoremap <silent> <C-n>: TmuxNavigateDown<cr>
-nnoremap <silent> <C-e> :TmuxNavigateUp<cr>
-nnoremap <silent> <C-i> :TmuxNavigateRight<cr>
-" nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
+" Moving around panes more easily"
+map <C-m> <C-w>h
+map <C-o> <C-w>l
+map <C-l> <C-w>k
+map <C-h> <C-w>j
 
 nnoremap l gk
 nnoremap h gj
@@ -63,18 +67,19 @@ vnoremap h gj
 vnoremap j h
 vnoremap k l
 
+let g:tmux_navigator_no_mappings = 1
+" nnoremap <silent> <C-m> :TmuxNavigateLeft<cr>
+" nnoremap <silent> <C-h>: TmuxNavigateDown<cr>
+" nnoremap <silent> <C-l> :TmuxNavigateUp<cr>
+" nnoremap <silent> <C-o> :TmuxNavigateRight<cr>
+" " nnoremap <silent> {Previous-Mapping} :TmuxNavigatePrevious<cr>
+
 " Change scroll down
-nnoremap <C-l> <C-e>
+" nnoremap <C-l> <C-e>
 
 " Move forward and back jumps
 nnoremap <C-i> <C-i>
 nnoremap <C-e> <C-o>
-
-" Moving around panes more easily"
-map <C-l> <C-w>k
-map <C-h> <C-w>j
-map <C-m> <C-w>h
-map <C-o> <C-w>l
 
 inoremap <C-f> <right>
 inoremap <C-b> <left>
@@ -87,13 +92,31 @@ cnoremap \>s/ \>smagic/
 nnoremap :g/ :g/\v
 nnoremap :g// :g//
 
+" Enter commands in the command line window. This allows you to
+" search and select previous commands.
+nnoremap : q:i
+
 set splitbelow
 set splitright
 set rnu
 
+" Set solid vertical border between panes.
+if has('folding')
+  if has('windows')
+    set fillchars=vert:┃
+    " set fillchars=vert:│                       " can't tell if I like the thinner version more...
+  endif
+endif
+
+set hidden                                       " allows hiding buffer w/o saving
+set highlight+=c:LineNr                          " highlight line number differently
+set list                                         " show whitespace
+set listchars+=trail:•                           " show trailing whitespace with bullets
+set listchars+=eol:⠀                             " U+2800 (blank) - don't show eol
+
+
 "Use TAB to complete when typing words, else inserts TABs as usual.
 "Uses dictionary and source files to find matching words to complete.
-
 "See help completion for source,
 "Note: usual completion is on <C-n> but more trouble to press all the time.
 "Never type the same word twice and maybe learn a new spellings!
@@ -113,6 +136,13 @@ set mouse=a
 " Search down into folders. Provides tab-completion for all file-related tasks
 set path+=**
 set tags=tags,.git/tags
+" If in git repo then move to the working tree root to assis with fuzzy
+" searching
+let dirRoot = system("git rev-parse --show-toplevel")
+if (dirRoot =~ "fatal") || (strlen(dirRoot) == 0)
+    let dirRoot = system("echo $PWD")
+endif
+execute ':cd ' . dirRoot
 " Initialis fuzzy-like file finding in current buffer or split window
 nnoremap <Leader>o :find **
 nnoremap <Leader>v :vsplit **/
@@ -131,6 +161,7 @@ set termguicolors     " enable true colors support
 " let ayucolor="light"  " for light version of theme
 " let ayucolor="mirage" " for mirage version of theme
 let ayucolor="dark"   " for dark version of theme
+let g:gruvbox_contrast_dark = "medium"
 
 set t_Co=256
 " background=dark
@@ -143,19 +174,6 @@ colorscheme gruvbox
 " colorscheme sierra
 " colorscheme base16-codeschool
 " colorscheme base16-nord-darker
-
-" Set up ctrlp settings"
-let g:ctrlp_map = '<c-p>'
-let g:ctrlp_cmd = 'CtrlP'
-" 
-" Defalt path is current directory "
-let g:ctrlp_working_path_mode = 'a' 
-
-" Turn on true colours for material theme " 
-if (has("nvim"))
-  "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
-  let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-endif
 
 "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
 "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
@@ -200,5 +218,27 @@ if has('syntax') && has('eval')
   packadd! matchit
 endif
 
-" Change line number colours from theme
-highlight LineNr guifg=#bfbfbf
+" Change line number colours from theme default
+" gruvbox (dark) - #bdae93
+highlight LineNr guifg=#bdae93
+
+" Clear the PAGER environment variable inside of Vim. This is to handle the 
+" case where you start Vim normally and want to use Vim's 'Man' function. 
+let $PAGER=''
+
+" Never ring bell, ever.
+if exists('&belloff')
+  set belloff=all
+endif
+
+" Add indentation for wrapped lines.
+if has('linebreak')
+  set breakindent
+  let &showbreak='➤ '                            " emphasise where text is wrapped
+  if exists('breakindentopt')
+    set breakindentopt=shift:2
+  endif
+endif
+"
+" Auto-indenting of numbered lists - doesn't seem to work atm.
+" set formatoptions+=n                             

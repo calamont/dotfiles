@@ -21,15 +21,9 @@ fi
 # Change pipenv variable to respect pyenv's local version
 export PIPENV_PYTHON="$HOME/.pyenv/shims/python"
 
-# Add alias' as shortcuts
-alias icloud="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/"
-alias UCL="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/UCL"
-alias modules="cd /Users/cal_lamont/Library/Mobile\ Documents/com~apple~CloudDocs/programming/python/modules"
-alias weather="curl http://wttr.in/"
-
 # Allow colours for `ls` to be turned on. The specific colours can be
 # changed in the ANSI colours terminal preferences
-export CLICOLOR=1
+# export CLICOLOR=1
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/cal_lamont/.oh-my-zsh"
@@ -39,16 +33,6 @@ export ZSH="/Users/cal_lamont/.oh-my-zsh"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 ZSH_THEME="powerlevel10k/powerlevel10k"
-
-# Base16 Shell - for material colour theme
-# BASE16_SHELL="$HOME/.config/base16-shell/base16-material.dark.sh"
-# [[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
-
-# Set list of themes to pick from when loading at random
-# Setting this variable when ZSH_THEME=random will cause zsh to load
-# a theme from this variable instead of looking in ~/.oh-my-zsh/themes/
-# If set to an empty array, this variable will have no effect.
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -76,10 +60,10 @@ HYPHEN_INSENSITIVE="true"
 # DISABLE_AUTO_TITLE="true"
 
 # Uncomment the following line to enable command auto-correction.
-# ENABLE_CORRECTION="true"
+ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -131,10 +115,35 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias icloud="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/"
+alias UCL="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/UCL"
 alias modules="cd /Users/cal_lamont/Library/Mobile\ Documents/com~apple~CloudDocs/programming/python/modules"
+alias weather="curl http://wttr.in/"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Use vim for command line editing
 set -o vi
+
+# Using vim as the pager instead of less.
+export PAGER="/bin/sh -c \"unset PAGER;col -b -x | \
+    vim -R -c 'set ft=man nomod nolist' -c 'map q :q<CR>' \
+    -c 'map <SPACE> <C-D>' -c 'map b <C-U>' \
+    -c 'nmap K :Man <C-R>=expand(\\\"<cword>\\\")<CR><CR>' -\""
+
+
+# Create keybindings for incremental search as it allows
+# for regex patterns.
+# bindkey '^R' history-incremental-pattern-search-backward
+# bindkey "^P" vi-up-line-or-history
+# bindkey "^N" vi-down-line-or-history
+
+# Search backwards and forwards with a pattern
+bindkey -M vicmd '/' history-incremental-pattern-search-backward
+bindkey -M vicmd '?' history-incremental-pattern-search-forward
+# set up for insert mode too
+bindkey -M viins '^R' history-incremental-pattern-search-backward
+bindkey -M viins '^F' history-incremental-pattern-search-forward
+bindkey -M viins "^P" vi-up-line-or-history
+bindkey -M viins "^N" vi-down-line-or-history

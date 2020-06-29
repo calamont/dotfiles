@@ -5,13 +5,6 @@ setlocal softtabstop=4                                  " number of spaces in ta
 setlocal shiftround
 setlocal autoindent
 setlocal number                                         " show line numbers
-let &colorcolumn=join(range(81,200),",")                " highlight columns after 80
-setlocal cursorline                                     " highlight line cursor is on
-setlocal showmatch  					" highlight matching paren
-
-" IndentLine {{
-let g:indentLine_char = '|'
-let g:indentLine_first_char = '|'
-let g:indentLine_showFirstIndentLevel = 1
-let g:indentLine_setColors = 0
-" }}
+" setlocal cursorline                                     " highlight line cursor is on
+" setlocal showmatch  					" highlight matching paren
+set spell spelllang=en_gb                               " turn on british spell checking

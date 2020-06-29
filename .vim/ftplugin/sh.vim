@@ -5,6 +5,6 @@ setlocal softtabstop=4                                  " number of spaces in ta
 setlocal shiftround
 setlocal autoindent
 setlocal number                                         " show line numbers
-let &colorcolumn=join(range(81,200),",")                " highlight columns after 80
+let &colorcolumn=join(range(100,200),",")                " highlight columns after 80
 setlocal cursorline                                     " highlight line cursor is on
 setlocal showmatch  					" highlight matching paren
