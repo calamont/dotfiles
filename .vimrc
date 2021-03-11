@@ -1,4 +1,21 @@
-" Callum Lamont's vimrc
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+"                     ██████╗ █████╗ ██╗     ███████╗
+"                    ██╔════╝██╔══██╗██║     ██╔════╝
+"                    ██║     ███████║██║     ███████╗
+"                    ██║     ██╔══██║██║     ╚════██║
+"                    ╚██████╗██║  ██║███████╗███████║
+"                     ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝
+
+"                    ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
+"                    ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
+"                    ██║   ██║██║██╔████╔██║██████╔╝██║
+"                    ╚██╗ ██╔╝██║██║╚██╔╝██║██╔══██╗██║
+"                     ╚████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
+"                      ╚═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 scriptencoding utf-8
 
 " Default tab options.
@@ -8,11 +25,13 @@ setlocal tabstop=4                                      " number of visual space
 setlocal softtabstop=4                                  " number of spaces in tab when editing
 setlocal shiftround
 setlocal autoindent
-setlocal number                                         " show line numbers
 
-if v:progname =~? "evim"
-  finish
-endif
+" Set line numbers as default in files and netrw
+setlocal number
+let g:netrw_bufsettings = 'noma nomod nu nowrap ro nobl'
+
+" Scroll before getting to the bottom of the screen
+set scrolloff=8
 
 " Modify saving of backup files
 if exists("$SUDO_USER")
@@ -40,16 +59,42 @@ syntax on  " turn on syntax highlighting
 " Make space the leader key and backslash the space/<Right> key.
 let mapleader = " "
 nnoremap <bslash> <space>
+vnoremap <bslash> <space>
 map <Leader><Leader> :nohlsearch<enter>
-nnoremap <Leader>i :set foldmethod:indent
-nnoremap <Leader>l zc
+
+" Easier saving
+nnoremap <Leader>w :w<CR>
+
+" Folding options with leader
+nnoremap <Leader>fi :set foldmethod:indent
+" nnoremap <Leader>l zc
 nnoremap <Leader>u zC
-nnoremap <Leader>h zo
+" nnoremap <Leader>h zo
 nnoremap <Leader>, zO
-nnoremap <Leader>r zR
-nnoremap <Leader>m zM
-nnoremap <Leader>gi :G<CR>
-nnoremap Y y$
+nnoremap <Leader>fu zR
+nnoremap <Leader>fa zM
+
+" Git (fugitive) commands with leader
+nnoremap <Leader>gs :G<CR>                       " get git status
+nnoremap <Leader>gn diffget //3<CR>              " merge left git conflict
+nnoremap <Leader>gt diffget //2<CR>              " merge right git conflict
+
+" Moving around with leader
+nnoremap <Leader>] :cn<CR>                       " jump to next quickfix
+nnoremap <Leader>[ :cp<CR>                       " jump to previous quickfix
+nnoremap <Leader>pr <C-^>                    " jump to previous buffer
+" Cycle through open buffers
+nnoremap <Leader>fo :bnext<CR>                   " cycle buffer - ne for next
+nnoremap <Leader>ba :bprevious<CR>               " cycle buffer - ba for back
+
+" nnoremap Y y$                                    
+nnoremap <Leader>cu ct"_"<CR>                      " delete till the next underscore
+" The below commands will insert a blank line above and below the current line
+nnoremap <silent><Leader>l :set paste<CR>m`O<Esc>``:set nopaste<CR>
+nnoremap <silent><Leader>h :set paste<CR>m`o<Esc>``:set nopaste<CR>
+
+" Searches with vimgrep and opens full height quickfix window of results
+nnoremap <Leader>gr :vimgrep //j ** <Bar> cw 1000<left><left><left><left><left><left><left><left><left><left><left><left><left><left><left>
 
 " Moving around panes more easily"
 map <C-m> <C-w>h
@@ -61,6 +106,8 @@ nnoremap l gk
 nnoremap h gj
 nnoremap j h
 nnoremap k l
+" nnoremap <Shift>l <Shift>{
+nnoremap h gj
 
 vnoremap l gk
 vnoremap h gj
@@ -96,6 +143,15 @@ nnoremap :g// :g//
 " search and select previous commands.
 nnoremap : q:i
 
+" The below mappings allow you to select/yank/delete/change spans
+" of alphanumeric text. This is particularly useful in python if 
+" you need to update part of a parameter name composed of many
+" underscores (e.g. transformed_text_data)
+nnoremap <Leader>u /\v[a-zA-Z0-9]*%#[a-zA-Z0-9]*<CR>:nohlsearch<CR>gn
+nnoremap <Leader>yu /\v[a-zA-Z0-9]*%#[a-zA-Z0-9]*<CR>:nohlsearch<CR>gny
+nnoremap <Leader>du /\v[a-zA-Z0-9]*%#[a-zA-Z0-9]*<CR>:nohlsearch<CR>gnd
+nnoremap <Leader>cu /\v[a-zA-Z0-9]*%#[a-zA-Z0-9]*<CR>:nohlsearch<CR>gnc
+
 set splitbelow
 set splitright
 set rnu
@@ -108,7 +164,8 @@ if has('folding')
   endif
 endif
 
-set hidden                                       " allows hiding buffer w/o saving
+" set hidden                                       " allows hiding buffer w/o saving
+" set autowriteall                                 " autosaves buffer before hiding
 set highlight+=c:LineNr                          " highlight line number differently
 set list                                         " show whitespace
 set listchars+=trail:•                           " show trailing whitespace with bullets
@@ -136,7 +193,7 @@ set mouse=a
 " Search down into folders. Provides tab-completion for all file-related tasks
 set path+=**
 set tags=tags,.git/tags
-" If in git repo then move to the working tree root to assis with fuzzy
+" If in git repo then move to the working tree root to assist with fuzzy
 " searching
 let dirRoot = system("git rev-parse --show-toplevel")
 if (dirRoot =~ "fatal") || (strlen(dirRoot) == 0)
@@ -145,8 +202,8 @@ endif
 execute ':cd ' . dirRoot
 " Initialis fuzzy-like file finding in current buffer or split window
 nnoremap <Leader>o :find **
-nnoremap <Leader>v :vsplit **/
-nnoremap <Leader>s :split **/
+nnoremap <Leader>v :vsplit **
+nnoremap <Leader>s :split **
 " Display all matching files when we tab complete
 set wildmenu
 set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.png,*.ico

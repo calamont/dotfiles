@@ -1,0 +1,7 @@
+[user]
+    name = calamont
+    email = cal_lamont@hotmail.com
+[credential]
+    helper = osxkeychain
+[diff]
+	submodule = log

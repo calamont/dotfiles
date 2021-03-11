@@ -19,7 +19,9 @@ if which pyenv-virtualenv-init > /dev/null; then
 fi
 
 # Change pipenv variable to respect pyenv's local version
-export PIPENV_PYTHON="$HOME/.pyenv/shims/python"
+export PYENV_ROOT="$HOME/.pyenv"
+export PIPENV_PYTHON="$PYENV_ROOT/shims/python"
+# export PYTHONPATH=$PYTHONPATH:/usr/local/Cellar/caffe/1.0_28/python/
 
 # Allow colours for `ls` to be turned on. The specific colours can be
 # changed in the ANSI colours terminal preferences
@@ -115,10 +117,18 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias ls="ls -lG"
 alias icloud="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/"
 alias UCL="cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/UCL"
 alias modules="cd /Users/cal_lamont/Library/Mobile\ Documents/com~apple~CloudDocs/programming/python/modules"
 alias weather="curl http://wttr.in/"
+alias grep="ggrep"  # use GNU grep
+alias paws="aws --profile personal"
+alias ec2ls="aws ec2 describe-instances --profile personal  --region eu-west-2 | jq -r '.Reservations[] | .Instances[] | \"\(.InstanceId)\t\(.InstanceType)\t\(.LaunchTime)\"'"
+alias fvim="nvim -c 'Telescope find_files'"  # automatically open nvim in Telescope file browser
+alias gvim="nvim -c 'Ge:'"  # use nvim fugitive plugin to organise git
+# Authentical AWS ECR with Docker
+alias ecr_login='aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

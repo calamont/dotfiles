@@ -319,3 +319,115 @@ new [description:"Read 10 pages from 54" end:"1590996976" entry:"1589185579" mod
 time 1590996991
 new [description:"Read 10 pages from 64" entry:"1590996991" modified:"1590996991" status:"pending" uuid:"f91a8a8d-3813-4862-9e11-02f620ed4ed5"]
 ---
+time 1595957115
+old [description:"Finish reading paper" due:"1588633200" entry:"1588350049" modified:"1588350049" status:"pending" uuid:"b15a508b-85b8-419e-90ba-6a522b09d72b"]
+new [description:"Finish reading paper" due:"1588633200" end:"1595957115" entry:"1588350049" modified:"1595957115" status:"completed" uuid:"b15a508b-85b8-419e-90ba-6a522b09d72b"]
+---
+time 1595957148
+old [depends:"851d6ea3-d121-4fc6-b026-cb8b7d779792" description:"Aggregating nodes in dendrogram" entry:"1585562568" modified:"1585562568" project:"dendrogram" status:"pending" tags:"clustering" uuid:"1d52ea8d-a2a6-45a0-8763-18c59cff2e20"]
+new [depends:"851d6ea3-d121-4fc6-b026-cb8b7d779792" description:"Aggregating nodes in dendrogram" end:"1595957148" entry:"1585562568" modified:"1595957148" project:"dendrogram" status:"completed" tags:"clustering" uuid:"1d52ea8d-a2a6-45a0-8763-18c59cff2e20"]
+---
+time 1595957167
+old [description:"Create script for running the Spacy pattern builder" entry:"1585558564" modified:"1585562725" project:"spacy" status:"pending" uuid:"cea6fd55-e09e-4832-a128-c9ec4a7fc561"]
+new [description:"Create script for running the Spacy pattern builder" end:"1595957167" entry:"1585558564" modified:"1595957167" project:"spacy" status:"completed" uuid:"cea6fd55-e09e-4832-a128-c9ec4a7fc561"]
+---
+time 1595957169
+old [description:"Try building Spacy patterns using multiple training examples" entry:"1585558618" modified:"1585562739" project:"spacy" status:"pending" uuid:"2193b48b-7e8c-4303-be53-ef7d4c7ea2f8"]
+new [description:"Try building Spacy patterns using multiple training examples" end:"1595957169" entry:"1585558618" modified:"1595957169" project:"spacy" status:"completed" uuid:"2193b48b-7e8c-4303-be53-ef7d4c7ea2f8"]
+---
+time 1595957176
+old [description:"Improve efficiecy of labelling nodes" entry:"1585641455" modified:"1585641455" project:"dendrogram" status:"pending" uuid:"f0670e4a-bd19-43c9-a4c7-50f6ff0d5b0b"]
+new [description:"Improve efficiecy of labelling nodes" end:"1595957176" entry:"1585641455" modified:"1595957176" project:"dendrogram" status:"completed" uuid:"f0670e4a-bd19-43c9-a4c7-50f6ff0d5b0b"]
+---
+time 1595957183
+old [description:"Check duplication removal for errors" entry:"1585903383" modified:"1585903383" project:"dendrogram" status:"pending" uuid:"52ca843e-aec6-4744-965e-9e97f787b659"]
+new [description:"Check duplication removal for errors" end:"1595957183" entry:"1585903383" modified:"1595957183" project:"dendrogram" status:"completed" uuid:"52ca843e-aec6-4744-965e-9e97f787b659"]
+---
+time 1595957188
+old [description:"Remove or replace common words with UNK" entry:"1585927037" modified:"1585927037" project:"dendrogram" status:"pending" uuid:"6ef0bb17-e269-4594-ad30-c58d99eeb4c6"]
+new [description:"Remove or replace common words with UNK" end:"1595957188" entry:"1585927037" modified:"1595957188" project:"dendrogram" status:"completed" uuid:"6ef0bb17-e269-4594-ad30-c58d99eeb4c6"]
+---
+time 1595957198
+old [description:"Node search function" entry:"1586350771" modified:"1586350771" project:"dendrogram" status:"pending" uuid:"d5831694-7f43-4553-801e-4447b29c3b91"]
+new [description:"Node search function" end:"1595957198" entry:"1586350771" modified:"1595957198" project:"dendrogram" status:"completed" uuid:"d5831694-7f43-4553-801e-4447b29c3b91"]
+---
+time 1595957199
+old [description:"Make function for grabbing text from lower nodes" entry:"1586364429" modified:"1586364429" project:"dendrogram" status:"pending" uuid:"27c096d2-552c-4d9c-a378-c4ffdde7e9cf"]
+new [description:"Make function for grabbing text from lower nodes" end:"1595957199" entry:"1586364429" modified:"1595957199" project:"dendrogram" status:"completed" uuid:"27c096d2-552c-4d9c-a378-c4ffdde7e9cf"]
+---
+time 1595957201
+old [description:"Get spacy patterns for a cluster" entry:"1587464940" modified:"1587464940" project:"spacy" status:"pending" uuid:"37142ef0-a17a-4be8-a09d-b8df10308d12"]
+new [description:"Get spacy patterns for a cluster" end:"1595957201" entry:"1587464940" modified:"1595957201" project:"spacy" status:"completed" uuid:"37142ef0-a17a-4be8-a09d-b8df10308d12"]
+---
+time 1595957202
+old [description:"Cosine cross-entropy score for assessing embeddings" entry:"1588240316" modified:"1588240316" status:"pending" tags:"dendrogram" uuid:"e63ded14-bf5c-440b-b18c-2bcb65cc8439"]
+new [description:"Cosine cross-entropy score for assessing embeddings" end:"1595957202" entry:"1588240316" modified:"1595957202" status:"completed" tags:"dendrogram" uuid:"e63ded14-bf5c-440b-b18c-2bcb65cc8439"]
+---
+time 1595957204
+old [description:"Read 10 pages from 64" entry:"1590996991" modified:"1590996991" status:"pending" uuid:"f91a8a8d-3813-4862-9e11-02f620ed4ed5"]
+new [description:"Read 10 pages from 64" end:"1595957204" entry:"1590996991" modified:"1595957204" status:"completed" uuid:"f91a8a8d-3813-4862-9e11-02f620ed4ed5"]
+---
+time 1595957206
+old [description:"Search for other libraries that can perform scalable clustering" entry:"1585323527" modified:"1585584096" status:"pending" tags:"clustering" uuid:"a798b587-ef45-4c24-9b45-79b9e5e1f38d"]
+new [description:"Search for other libraries that can perform scalable clustering" end:"1595957206" entry:"1585323527" modified:"1595957206" status:"completed" tags:"clustering" uuid:"a798b587-ef45-4c24-9b45-79b9e5e1f38d"]
+---
+time 1595957418
+new [description:"-h" entry:"1595957418" modified:"1595957418" status:"pending" uuid:"b0c5b49b-2358-45fa-a950-80896082c7bc"]
+---
+time 1595957422
+old [description:"-h" entry:"1595957418" modified:"1595957418" status:"pending" uuid:"b0c5b49b-2358-45fa-a950-80896082c7bc"]
+new [description:"-h" end:"1595957422" entry:"1595957418" modified:"1595957422" status:"completed" uuid:"b0c5b49b-2358-45fa-a950-80896082c7bc"]
+---
+time 1595957499
+new [description:"DEA solver in init Project:circuitlib" entry:"1595957499" modified:"1595957499" status:"pending" uuid:"74e1092b-f641-4f64-a6dc-e1985d09d1c2"]
+---
+time 1595957507
+old [description:"DEA solver in init Project:circuitlib" entry:"1595957499" modified:"1595957499" status:"pending" uuid:"74e1092b-f641-4f64-a6dc-e1985d09d1c2"]
+new [description:"DEA solver in init Project:circuitlib" end:"1595957507" entry:"1595957499" modified:"1595957507" status:"completed" uuid:"74e1092b-f641-4f64-a6dc-e1985d09d1c2"]
+---
+time 1595957514
+new [description:"DEA solver in init" entry:"1595957514" modified:"1595957514" project:"circuitlib" status:"pending" uuid:"bbd3a0b2-069d-40c5-817b-24cfaacd4b62"]
+---
+time 1595957544
+new [description:"create signal func api" entry:"1595957544" modified:"1595957544" project:"circuitlib" status:"pending" uuid:"d3807416-840c-41ff-8423-a82252dbeee0"]
+---
+time 1595959444
+new [description:"decorator check on signal funcs" entry:"1595959444" modified:"1595959444" project:"circuitlib" status:"pending" uuid:"f0f62e60-17bc-4a1c-b886-43eedc394c0b"]
+---
+time 1595961166
+old [description:"decorator check on signal funcs" entry:"1595959444" modified:"1595959444" project:"circuitlib" status:"pending" uuid:"f0f62e60-17bc-4a1c-b886-43eedc394c0b"]
+new [description:"decorator check on signal funcs" end:"1595961166" entry:"1595959444" modified:"1595961166" project:"circuitlib" status:"completed" uuid:"f0f62e60-17bc-4a1c-b886-43eedc394c0b"]
+---
+time 1596353623
+new [description:"Install w\/o needing numpy first" entry:"1596353623" modified:"1596353623" project:"circuitlib" status:"pending" uuid:"fe767e02-ada2-4d8e-9e05-b17076429c5c"]
+---
+time 1596354528
+new [description:"build req in proj toml" entry:"1596354528" modified:"1596354528" project:"circuitlib" status:"pending" uuid:"4cc66645-883b-4baa-b507-9a5f7584c9e8"]
+---
+time 1596696280
+new [description:"write cython signal funcs" entry:"1596696280" modified:"1596696280" project:"circuitlib" status:"pending" uuid:"d46a1d6d-0ebc-42db-96f9-734919217ad1"]
+---
+time 1597341560
+new [description:"default V to DC signal in AC" entry:"1597341560" modified:"1597341560" project:"circuitlib" status:"pending" uuid:"d18844de-0854-43fd-9d51-febe44030aa1"]
+---
+time 1597993238
+new [description:"confirm C = python signals" entry:"1597993238" modified:"1597993238" project:"circuitlib" status:"pending" uuid:"7a5a97b8-8c00-4f97-ab15-6d8f0cb809d5"]
+---
+time 1597993270
+old [description:"write cython signal funcs" entry:"1596696280" modified:"1596696280" project:"circuitlib" status:"pending" uuid:"d46a1d6d-0ebc-42db-96f9-734919217ad1"]
+new [description:"write cython signal funcs" end:"1597993270" entry:"1596696280" modified:"1597993270" project:"circuitlib" status:"completed" uuid:"d46a1d6d-0ebc-42db-96f9-734919217ad1"]
+---
+time 1598712880
+new [description:"find out why inductor slower" entry:"1598712880" modified:"1598712880" project:"circuitlib" status:"pending" uuid:"f71ef410-8b17-40bd-9e53-5d493f173582"]
+---
+time 1598712893
+old [description:"create signal func api" entry:"1595957544" modified:"1595957544" project:"circuitlib" status:"pending" uuid:"d3807416-840c-41ff-8423-a82252dbeee0"]
+new [description:"create signal func api" end:"1598712893" entry:"1595957544" modified:"1598712893" project:"circuitlib" status:"completed" uuid:"d3807416-840c-41ff-8423-a82252dbeee0"]
+---
+time 1598712901
+old [description:"confirm C = python signals" entry:"1597993238" modified:"1597993238" project:"circuitlib" status:"pending" uuid:"7a5a97b8-8c00-4f97-ab15-6d8f0cb809d5"]
+new [description:"confirm C = python signals" end:"1598712901" entry:"1597993238" modified:"1598712901" project:"circuitlib" status:"completed" uuid:"7a5a97b8-8c00-4f97-ab15-6d8f0cb809d5"]
+---
+time 1598790872
+new [description:"check it use t+h or t" entry:"1598790872" modified:"1598790872" project:"circuitlib" status:"pending" uuid:"d28219bc-b8e4-45a1-a6f6-4dedc3c5ff8d"]
+---
