@@ -108,7 +108,10 @@ set wildignore+=*.pdf,*.psd
 set wildignore+=*.pyc
 
 " Allow seamly yanking and copying between vim and other programs
-set clipboard+=unnamedplus
+" This seems like it would be useful but I actually find it annoying
+" that whatever is in my clipboard gets overwritten when I yank something
+" else
+" set clipboard+=unnamedplus
 
 " 2. REMAPS
 " Make space the leader key and backslash the space/<Right> key.
