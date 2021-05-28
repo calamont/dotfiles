@@ -130,6 +130,9 @@ alias gvim="nvim -c 'Ge:'"  # use nvim fugitive plugin to organise git
 # Authentical AWS ECR with Docker
 alias ecr_login='aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com'
 
+# TODO: Need to bind `edit-command-line` to something to allow better editing of
+# commands
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -157,3 +160,5 @@ bindkey -M viins '^R' history-incremental-pattern-search-backward
 bindkey -M viins '^F' history-incremental-pattern-search-forward
 bindkey -M viins "^P" vi-up-line-or-history
 bindkey -M viins "^N" vi-down-line-or-history
+
+export PATH="$HOME/.poetry/bin:$PATH"
