@@ -68,7 +68,7 @@ endif
 
 let ayucolor = 'mirage'
 colorscheme ayu
-let g:airline_theme='ayu_mirage'
+" let g:airline_theme='ayu_mirage'
 
 " set background=dark
 " let g:oceanic_material_transparent_background = 1
@@ -84,7 +84,7 @@ let g:airline_theme='ayu_mirage'
 " colorscheme onedark
  " highlight Normal guibg=NONE                            " transparent background
 
-let g:airline_powerline_fonts = 1
+" let g:airline_powerline_fonts = 1
 " let g:airline_theme='deus'
 
 " Change line number colours from theme default
@@ -95,7 +95,7 @@ highlight LineNr guifg=#7D7C8F
 " ayu (mirage) - 323A4D
 highlight CursorLine guibg=#323A4D
 highlight ColorColumn guibg=#323A4D
-highlight StatusLine guifg=#000000 guibg=#323A4D
+" highlight StatusLine guifg=#000000 guibg=#323A4D
 
 " Change default message colours
 highlight LspDiagnosticsDefaultError guifg=#FF3059
