@@ -19,7 +19,7 @@ vnoremap k l
 vnoremap <bslash> <space>
 
 " Scroll down keeping cursor in place
-nnoremap <C-x> <C-e>
+nnoremap <C-c> <C-e>
 
 " Move forward and back jumps
 nnoremap <C-i> <C-i>
