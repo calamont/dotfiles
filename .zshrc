@@ -139,12 +139,11 @@ alias ecr_login='aws ecr get-login-password --region $AWS_REGION | docker login 
 # Use vim for command line editing
 set -o vi
 
-# Using vim as the pager instead of less.
+# Using nvim as the pager instead of less.
 export PAGER="/bin/sh -c \"unset PAGER;col -b -x | \
-    vim -R -c 'set ft=man nomod nolist' -c 'map q :q<CR>' \
+    nvim -R -c 'set ft=man nomod nolist' -c 'map q :q<CR>' \
     -c 'map <SPACE> <C-D>' -c 'map b <C-U>' \
     -c 'nmap K :Man <C-R>=expand(\\\"<cword>\\\")<CR><CR>' -\""
-
 
 # Create keybindings for incremental search as it allows
 # for regex patterns.
