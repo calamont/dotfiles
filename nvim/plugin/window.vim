@@ -101,3 +101,14 @@ highlight ColorColumn guibg=#323A4D
 highlight LspDiagnosticsDefaultError guifg=#FF3059
 highlight LspDiagnosticsDefaultWarning guifg=#FF7E00
 highlight LspDiagnosticsDefaultHint guifg=#73C202
+
+" Define colours for statusline. For some reason these 
+highlight SelectedWindow guibg=#afe46c
+highlight Filename guibg=#273747 guifg=#afe46c
+highlight LineCount guibg=#273747 guifg=#afe46c
+highlight StatusLineNC guibg=#273747
+highlight MsgArea guibg=#273747
+highlight QuickFixLine guibg=#273747
+highlight link User9 SelectedWindow
+highlight link User8 LineCount
+highlight link User7 Filename
