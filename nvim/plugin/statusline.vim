@@ -39,7 +39,8 @@ set statusline+=%=  " switch to the right hand side
 " set statusline+=%*  " show filetype
 " set statusline=%9*
 " set statusline+=%y  " show filetype
-set statusline+=%8*
+" set statusline+=
+set statusline+=%{FugitiveHead()}\ 
 set statusline+=%4l/%2L\ \|%3c  " show line and col numbers
 " set statusline+=%*  " show filetype
 
