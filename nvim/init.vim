@@ -130,7 +130,8 @@ nnoremap :g// :g//
 
 " Enter commands in the command line window. This allows you to
 " search and select previous commands.
-nnoremap : q:i
+" This is largely redundant with the use of `Telescope command_history`
+" nnoremap : q:i
 
 " Make yanking behaviour similar to deleting
 nnoremap Y y$
@@ -166,5 +167,6 @@ nnoremap <Leader>gb :Git blame<CR>
 
 " Custom remappings for specific Lua functions
 lua require('cal_lamont')
+lua require('cal_lamont.cheatsheet')
 " lua require('cal_lamont.cheatsheet')
-nnoremap <Leader>cs :call v:lua.cal_lamont.cheatsheet('')<left><left>
+nnoremap <Leader>cs :call v:lua.cheatsheet('')<left><left>
