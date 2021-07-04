@@ -37,6 +37,8 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 :Plug 'neovim/nvim-lspconfig'
 :Plug 'nvim-lua/completion-nvim'
 
+" :Plug 'dbeniamine/cheat.sh-vim'
+
 call plug#end()
 
 " 1. COMPUTER SETTINGS/INTERACTIONS
@@ -161,3 +163,7 @@ nnoremap <Leader>gs :Git<CR>  " show git status
 nnoremap <Leader>gf :Ge:<CR>  " show git status full screen
 nnoremap <Leader>gu :Git push<CR>
 nnoremap <Leader>gb :Git blame<CR>
+
+" Custom remappings for specific Lua functions
+lua require('cheatsheet')
+nnoremap <Leader>cs :call v:lua.cheatsheet('')<left><left>
