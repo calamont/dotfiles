@@ -165,5 +165,6 @@ nnoremap <Leader>gu :Git push<CR>
 nnoremap <Leader>gb :Git blame<CR>
 
 " Custom remappings for specific Lua functions
-lua require('cheatsheet')
-nnoremap <Leader>cs :call v:lua.cheatsheet('')<left><left>
+lua require('cal_lamont')
+" lua require('cal_lamont.cheatsheet')
+nnoremap <Leader>cs :call v:lua.cal_lamont.cheatsheet('')<left><left>
