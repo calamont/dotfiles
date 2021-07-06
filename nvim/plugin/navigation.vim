@@ -29,7 +29,8 @@ nnoremap <Leader>bn :bnext<CR>                   " cycle to next buffer
 nnoremap <Leader>bp :bprevious<CR>               " cycle back to last buffer
 nnoremap <Leader>bb <C-^>                        " jump back to previous buffer
 
-" Cycle through quickfix list
+" Open and cycle through quickfix list
+nnoremap <C-q> :copen<CR>
 nnoremap <C-]> :cn<CR>
 nnoremap <C-[> :cp<CR>
 
