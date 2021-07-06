@@ -41,3 +41,4 @@ nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>ch <cmd>Telescope command_history<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <leader>fd :lua require('cal_lamont.telescope').search_dotfiles()<CR>
+nnoremap <leader>fc :lua require('cal_lamont.telescope').cheatsheet_snippet()<CR>
