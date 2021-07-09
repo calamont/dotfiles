@@ -156,8 +156,8 @@ nnoremap <Leader>du /\v[a-zA-Z0-9]*%#[a-zA-Z0-9]*<CR>:nohlsearch<CR>gnd
 nnoremap <Leader>cu /\v[a-zA-Z0-9]*%#[a-zA-Z0-9]*<CR>:nohlsearch<CR>gnc
 
 " The below commands will insert a blank line above and below the current line
-nnoremap <silent><Leader>l :set paste<CR>m`O<Esc>``:set nopaste<CR>
-nnoremap <silent><Leader>h :set paste<CR>m`o<Esc>``:set nopaste<CR>
+nnoremap <silent><Leader>ll :set paste<CR>m`O<Esc>``:set nopaste<CR>
+nnoremap <silent><Leader>hh :set paste<CR>m`o<Esc>``:set nopaste<CR>
 
 " Fugutive Git remappings!!
 nnoremap <Leader>gs :Git<CR>  " show git status
