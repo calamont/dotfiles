@@ -159,6 +159,12 @@ nnoremap <Leader>cu /\v[a-zA-Z0-9]*%#[a-zA-Z0-9]*<CR>:nohlsearch<CR>gnc
 nnoremap <silent><Leader>ll :set paste<CR>m`O<Esc>``:set nopaste<CR>
 nnoremap <silent><Leader>hh :set paste<CR>m`o<Esc>``:set nopaste<CR>
 
+" Remapping for trimming characters at the end of a line.
+" - ma -> set mark for current position
+" - $x -> jump to end of line and delete one character
+" - `a -> return to original positino using the set mark
+nnoremap <Leader>tr ma$x`a
+
 " Fugutive Git remappings!!
 nnoremap <Leader>gs :Git<CR>  " show git status
 nnoremap <Leader>gf :Ge:<CR>  " show git status full screen
