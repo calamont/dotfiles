@@ -67,9 +67,15 @@ endif
 " colorscheme gruvbox
 
 let ayucolor = 'mirage'
-colorscheme ayu
-" let g:airline_theme='ayu_mirage'
+" colorscheme ayu
 
+" let tokyonight_style = 'storm'
+let g:tokyonight_style = "storm"
+let g:tokyonight_italic_comments = 1
+let g:tokyonight_italic_keywords = 0
+" let g:tokyonight_hide_inactive_statusline = 1
+let g:tokyonight_sidebars = [ "qf", "vista_kind", "terminal", "packer" ]
+colorscheme tokyonight
 " set background=dark
 " let g:oceanic_material_transparent_background = 1
 " let g:oceanic_material_allow_italic = 1

@@ -23,6 +23,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 
+Plug 'folke/tokyonight.nvim'
 Plug 'ayu-theme/ayu-vim'
 Plug 'gruvbox-community/gruvbox'
 Plug 'glepnir/oceanic-material'
@@ -32,10 +33,11 @@ Plug 'joshdick/onedark.vim'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-telescope/telescope-fzy-native.nvim'
+Plug 'nvim-telescope/telescope-fzy-native.nvim', {'do': 'make'}
 
-:Plug 'neovim/nvim-lspconfig'
-:Plug 'nvim-lua/completion-nvim'
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 
 " :Plug 'dbeniamine/cheat.sh-vim'
 
